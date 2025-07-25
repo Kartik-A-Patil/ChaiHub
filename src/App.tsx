@@ -8,6 +8,7 @@
 import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import AppNavigator from './navigation/AppNavigator';
+import 'react-native-gesture-handler';
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
