@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, Card } from 'react-native-paper';
-
+import { useNavigation } from '@react-navigation/native';
 const LoginScreen = () => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const navigation = useNavigation<any>();
 
   return (
     <View style={styles.container}>
@@ -25,7 +26,7 @@ const LoginScreen = () => {
             secureTextEntry
             style={styles.input}
           />
-          <Button mode="contained" onPress={() => {}} style={styles.button}>
+          <Button mode="contained" onPress={() => {navigation.navigate('Home')}} style={styles.button}>
             Login
           </Button>
         </Card.Content>

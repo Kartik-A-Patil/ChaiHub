@@ -1,0 +1,175 @@
+import { StyleSheet } from 'react-native';
+import { globalStyles } from './globalStyles';
+
+const styles = StyleSheet.create({
+  ...globalStyles,
+  cartItemTextWrap: {
+    justifyContent: 'center',
+  },
+  bottomSpacer: {
+    height: 20,
+    backgroundColor: '#fff',
+  },
+  root: {
+    flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: 'space-between',
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
+    justifyContent: 'space-between',
+    
+  },
+  iconBtn: {
+    width: 48,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    color: '#161412',
+    fontSize: 20,
+    fontWeight: 'bold',
+    flex: 1,
+    textAlign: 'center',
+    paddingRight: 48,
+  },
+  cartItemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    minHeight: 72,
+    paddingVertical: 8,
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  cartItemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  cartItemImage: {
+    width: 56,
+    height: 56,
+    borderRadius: 12,
+    marginRight: 16,
+    backgroundColor: '#eee',
+  },
+  cartItemName: {
+    color: '#161412',
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 2,
+  },
+  cartItemDesc: {
+    color: '#81766a',
+    fontSize: 14,
+    fontWeight: '400',
+  },
+  cartItemRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  qtyBtn: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#f4f2f1',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  qtyBtnText: {
+    fontSize: 18,
+    color: '#161412',
+    fontWeight: '500',
+  },
+  qtyInput: {
+    width: 24,
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#161412',
+    backgroundColor: 'transparent',
+    padding: 0,
+  },
+  paymentTitle: {
+    color: '#161412',
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 8,
+  },
+  paymentRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    minHeight: 50,
+    justifyContent: 'space-between',
+  },
+  paymentLabel: {
+    color: '#161412',
+    fontSize: 14,
+    fontWeight: '400',
+    flex: 1,
+  },
+  paymentValue: {
+    color: '#161412',
+    fontSize: 16,
+    fontWeight: '400',
+  },
+  checkoutContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: '#fff',
+  },
+  checkoutBtn: {
+    backgroundColor: '#000000ff',
+    borderRadius: 12,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
+  checkoutBtnText: {
+    color: '#ffffffff',
+    fontSize: 16,
+    fontWeight: 'thin',
+    letterSpacing: 1.5,
+  },
+  bottomNav: {
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: '#f4f2f1',
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+    paddingTop: 8,
+    gap: 8,
+  },
+  navItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 2,
+  },
+  navItemActive: {},
+  navLabel: {
+    color: '#81766a',
+    fontSize: 12,
+    fontWeight: '500',
+    letterSpacing: 0.2,
+  },
+  navLabelActive: {
+    color: '#161412',
+  },
+});
+
+export default styles;
