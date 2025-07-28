@@ -27,18 +27,8 @@ const CartScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.root}>
+    <SafeAreaView style={[styles.root, { paddingTop: 16 }]}> 
       <View style={{ flex: 1 }}>
-        {/* Header */}
-        <View style={styles.headerRow}>
-          <TouchableOpacity style={styles.iconBtn}>
-            {/* Replace with icon library in production */}
-            <Text style={{ fontSize: 24, color: '#161412' }}>{'<'}</Text>
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Cart</Text>
-
-        </View>
-
         {/* Cart Items Scrollable Section */}
         <ScrollView
           style={{ flex: 1 }}

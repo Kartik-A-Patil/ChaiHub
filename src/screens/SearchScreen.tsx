@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, FlatList, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import { products } from '../data/restaurants';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
@@ -14,7 +21,7 @@ const SearchScreen = () => {
   const [query, setQuery] = useState('');
 
   const filteredItems = products.filter(item =>
-    item.name.toLowerCase().includes(query.toLowerCase())
+    item.name.toLowerCase().includes(query.toLowerCase()),
   );
 
   return (
@@ -38,12 +45,23 @@ const SearchScreen = () => {
             onPress={() => navigation.navigate('Product', { id: item.id })}
           >
             <View style={styles.featuredItem}>
-              <Image source={item.image} style={styles.featuredImage} />
+              <Image
+                source={
+                  typeof item.image === 'string'
+                    ? { uri: item.image }
+                    : item.image
+                }
+                style={styles.featuredImage}
+              />
             </View>
             <Text style={styles.featuredName}>{item.name}</Text>
           </TouchableOpacity>
         )}
-        ListEmptyComponent={<Text style={{ textAlign: 'center', marginTop: 20 }}>No products found.</Text>}
+        ListEmptyComponent={
+          <Text style={{ textAlign: 'center', marginTop: 20 }}>
+            No products found.
+          </Text>
+        }
       />
     </View>
   );

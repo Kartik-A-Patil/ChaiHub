@@ -20,7 +20,6 @@ const NearbyRestaurantsScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
     <View style={NearbyRestaurantsStyles.container}>
-      <Text style={NearbyRestaurantsStyles.title}>Nearby</Text>
       <View style={NearbyRestaurantsStyles.filterRow}>
         <TouchableOpacity style={NearbyRestaurantsStyles.filterBtn}>
           <Text style={NearbyRestaurantsStyles.filterBtnText}>Distance ▼</Text>
@@ -31,13 +30,21 @@ const NearbyRestaurantsScreen = () => {
       </View>
       <FlatList
         data={restaurants}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
-          <Pressable onPress={() => navigation.navigate('RestaurantMenu', { id: item.id })}>
+          <Pressable
+            onPress={() =>
+              navigation.navigate('RestaurantMenu', { id: item.id })
+            }
+          >
             <View style={NearbyRestaurantsStyles.card}>
               <Image
-                source={typeof item.image === 'string' ? { uri: item.image } : item.image}
+                source={
+                  typeof item.image === 'string'
+                    ? { uri: item.image }
+                    : item.image
+                }
                 style={NearbyRestaurantsStyles.image}
                 resizeMode="cover"
               />

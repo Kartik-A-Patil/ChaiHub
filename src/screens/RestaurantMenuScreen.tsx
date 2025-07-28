@@ -22,18 +22,11 @@ const TABS = [
   { key: 'snacks', label: 'Snacks' },
 ];
 
-const SORTS = [
-  { key: 'popular', label: 'Sort: Popular' },
-  { key: 'price', label: 'Sort: Price' },
-  { key: 'newest', label: 'Sort: Newest' },
-];
-
 const RestaurantMenuScreen = () => {
   const route = useRoute<MenuScreenRouteProp>();
   const { id } = route.params;
   const restaurant = restaurants.find(r => r.id === id);
   const [activeTab, setActiveTab] = useState('tea');
-  const [activeSort, setActiveSort] = useState('popular');
 
   if (!restaurant) {
     return (
@@ -58,17 +51,13 @@ const RestaurantMenuScreen = () => {
     let items = products.filter(
       p => p.restaurantId === id && p.type === activeTab,
     );
-    if (activeSort === 'price')
-      items = [...items].sort((a, b) => a.price - b.price);
-    if (activeSort === 'newest') items = [...items].reverse();
     return items;
-  }, [id, activeTab, activeSort]);
+  }, [id, activeTab]);
 
   // Header, image, best selling, menu title
   const listHeader = (
     <>
-      {/* Restaurant image */}
-
+      
       <Image
         source={
           typeof restaurant.image === 'string'

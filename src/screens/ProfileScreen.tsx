@@ -17,16 +17,7 @@ const ProfileScreen = ({ navigation }: any) => {
   );
 
   return (
-    <View style={[globalStyles.container, { backgroundColor: '#fff' }]}>  
-      {/* Back Button */}
-      <TouchableOpacity
-        style={ProfileScreenStyles.backButton}
-        onPress={() => navigation && navigation.goBack && navigation.goBack()}
-        accessibilityLabel="Go back"
-      >
-        <Icon name="arrow-left" size={26} color="#222" />
-      </TouchableOpacity>
-
+    <View style={[globalStyles.container, { backgroundColor: '#fff', paddingTop: 16 }]}>  
       {/* Header */}
       <Text style={ProfileScreenStyles.headerTitle}>Account</Text>
       <View style={ProfileScreenStyles.header}>

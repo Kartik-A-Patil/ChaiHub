@@ -9,13 +9,29 @@ import NearbyRestaurantsScreen from '../screens/NearbyRestaurantsScreen';
 import { Text } from 'react-native';
 
 const Tab = createBottomTabNavigator();
-
+const HeaderRightBtn = (navigation: any) => {
+  return (
+    <MaterialCommunityIcons
+      name="cog-outline"
+      size={26}
+      color="#222"
+      style={{ marginRight: 16 }}
+      onPress={() => navigation.navigate('Settings')}
+    />
+  );
+};
+const HeaderStyle = {
+  backgroundColor: '#fff',
+  borderBottomWidth: 0,
+  elevation: 0,
+  shadowOpacity: 0,
+};
+// No shared HeaderTitleStyle object; use inline style for correct type inference
 const HomeTabs = () => {
   return (
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={({ route }) => ({
-        headerShown: false,
         tabBarActiveTintColor: '#222222',
         tabBarInactiveTintColor: '#575757',
         tabBarStyle: { backgroundColor: '#fff' },
@@ -51,10 +67,52 @@ const HomeTabs = () => {
         ),
       })}
     >
-  <Tab.Screen name="Home" component={HomeScreen} />
-  <Tab.Screen name="Nearby" component={NearbyRestaurantsScreen} />
-  <Tab.Screen name="Cart" component={CartScreen} />
-  <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={({ navigation }) => ({
+          headerRight: () => <HeaderRightBtn navigation={navigation} />, 
+          headerStyle: HeaderStyle,
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 32,
+            fontFamily: 'Rubik_Wet_Paint',
+            color: '#D2691E', // chocolate color for extra appeal
+            letterSpacing: 2,
+            textShadowColor: '#b8860b',
+            textShadowOffset: { width: 1, height: 2 },
+            textShadowRadius: 4,
+          },
+          headerTitle: 'ChaiHub',
+        })}
+      />
+      <Tab.Screen
+        name="Nearby"
+        component={NearbyRestaurantsScreen}
+        options={({ navigation }) => ({
+          headerRight: () => <HeaderRightBtn navigation={navigation} />, 
+          headerStyle: HeaderStyle,
+          headerTitleStyle: { fontWeight: 'bold', fontSize: 21, fontFamily: 'Raleway' },
+        })}
+      />
+      <Tab.Screen
+        name="Cart"
+        component={CartScreen}
+        options={({ navigation }) => ({
+          headerRight: () => <HeaderRightBtn navigation={navigation} />, 
+          headerStyle: HeaderStyle,
+          headerTitleStyle: { fontWeight: 'bold', fontSize: 21, fontFamily: 'Raleway' },
+        })}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={({ navigation }) => ({
+          headerRight: () => <HeaderRightBtn navigation={navigation} />, 
+          headerStyle: HeaderStyle,
+          headerTitleStyle: { fontWeight: 'bold', fontSize: 21, fontFamily: 'Raleway' },
+        })}
+      />
     </Tab.Navigator>
   );
 };
