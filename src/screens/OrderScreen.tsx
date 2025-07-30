@@ -1,67 +1,109 @@
-import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  Modal,
+} from 'react-native';
+import { Snackbar } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import { useNavigation } from '@react-navigation/native';
-import { useRoute } from '@react-navigation/native';
+import { orderScreenStyles as styles } from '../styles/OrderScreenStyles';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCartItems, selectCartTotal } from '../store/cartSelectors';
+import { clearCartAsync } from '../store/cartSlice';
+import type { AppDispatch } from '../store/store';
 
 const OrderScreen = () => {
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+
   const navigation = useNavigation();
-  const route = useRoute();
+  const dispatch = useDispatch<AppDispatch>();
+  const cartItems = useSelector(selectCartItems);
+  const cartTotal = useSelector(selectCartTotal);
 
-  React.useEffect(() => {
-    // Only allow access if paymentSuccess param is true
-    if (!route.params || !(route.params as any).paymentSuccess) {
-      Alert.alert('Error', 'Please complete payment first.');
-      navigation.goBack();
+  // Snackbar state
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMsg, setSnackbarMsg] = useState('');
+  const [snackbarType, setSnackbarType] = useState<'error' | 'success'>('success');
+
+  const handleProceedToPayment = () => {
+    if (!address || !phone) {
+      setSnackbarMsg('Please fill in all fields.');
+      setSnackbarType('error');
+      setSnackbarVisible(true);
+      return;
     }
-  }, [route.params, navigation]);
+    setModalVisible(true);
+  };
 
-  const handleOrder = async () => {
+  const handlePayment = () => {
     setLoading(true);
+    setTimeout(() => {
+      createOrder();
+    }, 1500);
+  };
+
+  const createOrder = async () => {
     try {
       const user = auth().currentUser;
       if (!user) {
-        Alert.alert('Error', 'User not logged in');
+        setSnackbarMsg('User not logged in');
+        setSnackbarType('error');
+        setSnackbarVisible(true);
         setLoading(false);
         return;
       }
-      const userDetails = {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        phoneNumber: user.phoneNumber,
-      };
       const order = {
         userId: user.uid,
         address,
         phone,
-        userDetails,
+        items: cartItems.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          size: item.size || null,
+          sweetness: item.sweetness || null,
+        })),
+        total: cartTotal,
         status: 'pending',
         createdAt: firestore.FieldValue.serverTimestamp(),
       };
       await firestore().collection('orders').add(order);
-      Alert.alert('Success', 'Order placed successfully!');
-      navigation.goBack();
+      dispatch(clearCartAsync());
+      setLoading(false);
+      setModalVisible(false);
+      setSnackbarMsg('Your order has been placed successfully!');
+      setSnackbarType('success');
+      setSnackbarVisible(true);
+      setTimeout(() => {
+        navigation.navigate('RecentOrders');
+      }, 1500);
     } catch (error) {
       const errMsg = error instanceof Error ? error.message : 'Unknown error';
-      Alert.alert('Error', errMsg);
-    } finally {
+      setSnackbarMsg(errMsg);
+      setSnackbarType('error');
+      setSnackbarVisible(true);
       setLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Order Details</Text>
+      <Text style={styles.title}>Enter Your Details</Text>
       <TextInput
         style={styles.input}
-        placeholder="Address"
+        placeholder="Delivery Address"
         value={address}
         onChangeText={setAddress}
+        placeholderTextColor="#888888"
       />
       <TextInput
         style={styles.input}
@@ -69,32 +111,83 @@ const OrderScreen = () => {
         value={phone}
         onChangeText={setPhone}
         keyboardType="phone-pad"
+        placeholderTextColor="#888888"
       />
-      <Button title={loading ? 'Placing Order...' : 'Pay & Place Order'} onPress={handleOrder} disabled={loading} />
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleProceedToPayment}
+        disabled={cartItems.length === 0}
+      >
+        <Text style={styles.buttonText}>Proceed to Payment</Text>
+      </TouchableOpacity>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Simulated Payment</Text>
+            <Text style={styles.modalSubtitle}>
+              This is for demonstration only. Card details are pre-filled with
+              random data.
+            </Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Card Number"
+              value="**** **** **** 1234"
+              editable={false}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Card Holder"
+              value="John Doe"
+              editable={false}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Expiry Date"
+              value="12/25"
+              editable={false}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="CVV"
+              value="***"
+              editable={false}
+              secureTextEntry
+            />
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={handlePayment}
+              disabled={loading}
+            >
+              {loading ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.confirmButtonText}>Pay Now</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={() => setSnackbarVisible(false)}
+        duration={2000}
+        style={{ backgroundColor: snackbarType === 'error' ? '#d32f2f' : '#388e3c' }}
+        action={snackbarType === 'error' ? undefined : {
+          label: 'OK',
+          onPress: () => setSnackbarVisible(false),
+        }}
+      >
+        {snackbarMsg}
+      </Snackbar>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 15,
-  },
-});
 
 export default OrderScreen;

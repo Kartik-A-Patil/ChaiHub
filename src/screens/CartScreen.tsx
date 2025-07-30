@@ -149,7 +149,8 @@ const CartScreen = () => {
           </View>
           <TouchableOpacity
             style={[styles.checkoutBtn, { maxWidth: 180, marginLeft: 16 }]}
-            onPress={() => navigation.navigate('Payment')}
+            onPress={() => navigation.navigate('Order')}
+            disabled={items.length === 0}
           >
             <Text style={styles.checkoutBtnText}>Order</Text>
           </TouchableOpacity>
