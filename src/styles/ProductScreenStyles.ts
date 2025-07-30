@@ -92,6 +92,39 @@ const ProductScreenStyles = StyleSheet.create({
     fontWeight: 'bold',
     letterSpacing: 1.2,
   },
+  quantityContainer: {
+    marginTop: 10,
+    marginBottom: 20,
+    alignItems: 'flex-start',
+  },
+  quantitySelectorRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+  },
+  quantityBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: '#c5c5c5ff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+    marginHorizontal: 8,
+  },
+  quantityBtnText: {
+    fontSize: 22,
+    color: '#161412',
+    fontWeight: 'bold',
+  },
+  quantityValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    minWidth: 32,
+    textAlign: 'center',
+    color: '#161412',
+  },
 });
 
 export default ProductScreenStyles;

@@ -2,7 +2,12 @@ import React from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Text, Card } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
+import auth, {
+  signInWithEmailAndPassword,
+  signInAnonymously,
+  GoogleAuthProvider,
+  signInWithCredential,
+} from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 GoogleSignin.configure({
@@ -17,7 +22,7 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     try {
-      await auth().signInWithEmailAndPassword(email, password);
+      await signInWithEmailAndPassword(auth(), email, password);
       navigation.navigate('Home');
     } catch (error) {
       console.error('Error logging in:', error);
@@ -33,9 +38,9 @@ const LoginScreen = () => {
       const userInfo = await GoogleSignin.signIn();
       const { idToken, accessToken } = userInfo;
       // Create a Google credential with the token
-      const googleCredential = auth.GoogleAuthProvider.credential(idToken, accessToken);
+      const googleCredential = GoogleAuthProvider.credential(idToken, accessToken);
       // Sign-in the user with the credential
-      await auth().signInWithCredential(googleCredential);
+      await signInWithCredential(auth(), googleCredential);
       navigation.navigate('Home');
     } catch (error) {
       console.error('Error with Google sign-in:', error);
@@ -46,7 +51,7 @@ const LoginScreen = () => {
 
   const handleGuestSignIn = async () => {
     try {
-      await auth().signInAnonymously();
+      await signInAnonymously(auth());
       navigation.navigate('Home');
     } catch (error) {
       console.error('Error with guest sign-in:', error);

@@ -5,7 +5,6 @@ export const homeScreenStyles = StyleSheet.create({
   container: {
     ...globalStyles.container,
     backgroundColor: '#fff',
-    paddingHorizontal: 20,
     paddingTop: 16,
   },
   searchBox: {
@@ -16,6 +15,7 @@ export const homeScreenStyles = StyleSheet.create({
     paddingHorizontal: 16,
     height: 48,
     marginBottom: 20,
+    marginHorizontal: 20,
   },
   searchInput: {
     flex: 1,
@@ -28,17 +28,18 @@ export const homeScreenStyles = StyleSheet.create({
     fontWeight: '700',
     marginVertical: 12,
     color: '#000000',
+    marginHorizontal: 20,
   },
   featuredRow: {
-    flexDirection: 'row',
     gap: 6,
     marginBottom: 24,
   },
   featuredItemContainer: {
-    width: 250,
+    width: 220,
     flex: 1,
     overflow: 'hidden',
-    marginRight: 18,
+    marginRight: 5,
+    marginLeft: 20,
   },
   featuredItem: {
     backgroundColor: '#ffffffff',
@@ -63,6 +64,7 @@ export const homeScreenStyles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
     gap: 16,
+    marginHorizontal: 20,
   },
   offerText: {
     flex: 1,
@@ -88,10 +90,12 @@ export const homeScreenStyles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 12,
     color: '#222',
+    marginHorizontal: 20,
   },
   quickMenuGrid: {
     flexDirection: 'column',
     gap: 0,
+    marginHorizontal: 20,
   },
   quickMenuRow: {
     flexDirection: 'row',
@@ -102,7 +106,7 @@ export const homeScreenStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 16,
-    padding: 12,
+    padding:10,
     borderColor: '#E0E0E0',
     borderWidth: 1,
     width: '48%', // 2 per row with margin
@@ -111,8 +115,8 @@ export const homeScreenStyles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   quickMenuImage: {
-    width: 48,
-    height: 48,
+    width: 58,
+    height: 54,
     borderRadius: 12,
     marginRight: 12,
     resizeMode: 'cover',

@@ -12,6 +12,8 @@ export interface CartItem {
   name: string;
   price: number;
   quantity: number;
+  size?: string;
+  sweetness?: string;
 }
 
 interface CartState {

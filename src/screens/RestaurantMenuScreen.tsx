@@ -1,9 +1,13 @@
 import React, { useState, useMemo } from 'react';
+import imageMap from '../utils/imageMap';
 import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
+import { Snackbar } from 'react-native-paper';
+import { useDispatch } from 'react-redux';
+import { addItemAsync } from '../store/cartSlice';
 import { Picker } from '@react-native-picker/picker';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { restaurants, products } from '../data/restaurants';
+import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import RestaurantMenuStyles from '../styles/RestaurantMenuStyles';
+import { useFirestore } from '../contexts/FirestoreContext';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 // Type for route params
@@ -25,8 +29,25 @@ const TABS = [
 const RestaurantMenuScreen = () => {
   const route = useRoute<MenuScreenRouteProp>();
   const { id } = route.params;
+  const { products ,restaurants} = useFirestore();
+  const navigation = useNavigation();
   const restaurant = restaurants.find(r => r.id === id);
   const [activeTab, setActiveTab] = useState('tea');
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const onDismissSnackBar = () => setSnackbarVisible(false);
+
+  const handleAddToCart = (product: any) => {
+    dispatch(addItemAsync({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+    }));
+    setSnackbarVisible(true);
+  };
 
   if (!restaurant) {
     return (
@@ -60,8 +81,8 @@ const RestaurantMenuScreen = () => {
       
       <Image
         source={
-          typeof restaurant.image === 'string'
-            ? { uri: restaurant.image }
+          typeof restaurant.image === 'string' && imageMap[restaurant.image]
+            ? imageMap[restaurant.image]
             : restaurant.image
         }
         style={RestaurantMenuStyles.image}
@@ -83,31 +104,36 @@ const RestaurantMenuScreen = () => {
         showsHorizontalScrollIndicator={false}
         style={{ marginVertical: 8, marginLeft: 0 }}
         renderItem={({ item }) => (
-          <View
-            style={{
-              width: 140,
-              marginRight: 12,
-              backgroundColor: '#f8f8f8',
-              borderRadius: 12,
-              padding: 8,
-            }}
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Product', { id: item.id })}
+            activeOpacity={0.8}
           >
-            <Image
-              source={
-                typeof item.image === 'string'
-                  ? { uri: item.image }
-                  : item.image
-              }
-              style={{ width: '100%', height: 70, borderRadius: 8 }}
-            />
+            <View
+              style={{
+                width: 140,
+                marginRight: 12,
+                backgroundColor: '#f8f8f8',
+                borderRadius: 12,
+                padding: 8,
+              }}
+            >
+              <Image
+                source={
+                  typeof item.image === 'string' && imageMap[item.image]
+                    ? imageMap[item.image]
+                    : item.image
+                }
+                style={{ width: '100%', height: 70, borderRadius: 8 }}
+              />
 
-            <Text style={{ fontWeight: 'bold', fontSize: 15, marginTop: 4 }}>
-              {item.name}
-            </Text>
-            <Text style={{ color: '#888', fontSize: 12 }}>
-              {item.description}
-            </Text>
-          </View>
+              <Text style={{ fontWeight: 'bold', fontSize: 15, marginTop: 4 }}>
+                {item.name}
+              </Text>
+              <Text style={{ color: '#888', fontSize: 12 }}>
+                {item.description}
+              </Text>
+            </View>
+          </TouchableOpacity>
         )}
       />
       {/* Menu section title */}
@@ -177,43 +203,49 @@ const RestaurantMenuScreen = () => {
           // Product type guard
           const product = item as (typeof products)[number];
           return (
-            <View style={RestaurantMenuStyles.menuItem}>
-              <Image
-                source={
-                  typeof product.image === 'string'
-                    ? { uri: product.image }
-                    : product.image
-                }
-                style={RestaurantMenuStyles.menuImage}
-                resizeMode="cover"
-              />
-              <View style={RestaurantMenuStyles.menuInfo}>
-                <Text style={RestaurantMenuStyles.menuName}>
-                  {product.name}
-                </Text>
-                <Text style={RestaurantMenuStyles.menuDesc}>
-                  {product.description}
-                </Text>
-                <Text style={RestaurantMenuStyles.menuPrice}>
-                  ₹{product.price}
-                </Text>
-              </View>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#222',
-                  borderRadius: 16,
-                  paddingHorizontal: 14,
-                  paddingVertical: 7,
-                  alignSelf: 'center',
-                }}
-              >
-                <Text
-                  style={{ color: '#fff', fontWeight: 'bold', fontSize: 13 }}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Product', { id: product.id })}
+              activeOpacity={0.8}
+            >
+              <View style={RestaurantMenuStyles.menuItem}>
+                <Image
+                  source={
+                    typeof product.image === 'string' && imageMap[product.image]
+                      ? imageMap[product.image]
+                      : product.image
+                  }
+                  style={RestaurantMenuStyles.menuImage}
+                  resizeMode="cover"
+                />
+                <View style={RestaurantMenuStyles.menuInfo}>
+                  <Text style={RestaurantMenuStyles.menuName}>
+                    {product.name}
+                  </Text>
+                  <Text style={RestaurantMenuStyles.menuDesc}>
+                    {product.description}
+                  </Text>
+                  <Text style={RestaurantMenuStyles.menuPrice}>
+                    ₹{product.price}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#222',
+                    borderRadius: 16,
+                    paddingHorizontal: 14,
+                    paddingVertical: 7,
+                    alignSelf: 'center',
+                  }}
+                  onPress={() => handleAddToCart(product)}
                 >
-                  Add to Cart
-                </Text>
-              </TouchableOpacity>
-            </View>
+                  <Text
+                    style={{ color: '#fff', fontWeight: 'bold', fontSize: 13 }}
+                  >
+                    Add to Cart
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
           );
         }}
         ListEmptyComponent={
@@ -222,6 +254,23 @@ const RestaurantMenuScreen = () => {
           </Text>
         }
       />
+      <Snackbar
+        visible={snackbarVisible}
+        onDismiss={onDismissSnackBar}
+        duration={1000} // Adjust duration as needed
+        action={{
+          label: 'View Cart',
+          onPress: () => {
+            navigation.navigate('Cart');
+          },
+        }}
+        style={{
+          backgroundColor: '#222',
+        }}
+        textColor={'#fff'}
+        >
+        Item added to cart!
+      </Snackbar>
     </View>
   );
 };

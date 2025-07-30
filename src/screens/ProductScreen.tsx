@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { Snackbar } from 'react-native-paper';
+import { RouteProp, useRoute, useNavigation, NavigationProp } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import type { AppDispatch } from '../store/store';
+import { addItemAsync, loadCart } from '../store/cartSlice';
 import ProductScreenStyles from '../styles/ProductScreenStyles';
-import { products } from '../data/restaurants';
-
+import { useFirestore } from '../contexts/FirestoreContext';
+import imageMap from '../utils/imageMap';
 type RootStackParamList = {
   Product: { id: string };
   [key: string]: any;
 };
-
 
 const SIZES = ['Small', 'Medium', 'Large'];
 const SWEETNESS = ['Less Sweet', 'Regular', 'Extra Sweet'];
@@ -16,12 +19,34 @@ const SWEETNESS = ['Less Sweet', 'Regular', 'Extra Sweet'];
 const ProductScreen: React.FC = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'Product'>>();
   const { id } = route.params;
-
+  const { products } = useFirestore();
   // Find product by id from products array
   const product = products.find(p => p.id === id);
 
   const [selectedSize, setSelectedSize] = useState('Medium');
   const [selectedSweetness, setSelectedSweetness] = useState('Regular');
+  const [quantity, setQuantity] = useState(1);
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const onDismissSnackBar = () => setSnackbarVisible(false);
+
+  const handleAddToCart = async () => {
+    if (product) {
+      await dispatch(addItemAsync({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: quantity,
+        size: selectedSize,
+        sweetness: selectedSweetness,
+      }));
+      await dispatch(loadCart());
+      setSnackbarVisible(true);
+    }
+  };
 
   if (!product) {
     return (
@@ -35,7 +60,11 @@ const ProductScreen: React.FC = () => {
     <View style={ProductScreenStyles.container}>
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
         <Image
-          source={typeof product.image === 'string' ? { uri: product.image } : product.image}
+          source={
+            typeof product.image === 'string' && imageMap[product.image]
+              ? imageMap[product.image]
+              : product.image
+          }
           style={ProductScreenStyles.image}
           resizeMode="cover"
         />
@@ -101,10 +130,43 @@ const ProductScreen: React.FC = () => {
             ))}
           </View>
         </ScrollView>
+
+        {/* Quantity Selector */}
+        <View style={ProductScreenStyles.quantityContainer}>
+          <Text style={ProductScreenStyles.sectionLabel}>Quantity</Text>
+          <View style={ProductScreenStyles.quantitySelectorRow}>
+            <TouchableOpacity
+              style={ProductScreenStyles.quantityBtn}
+              onPress={() => setQuantity(q => Math.max(1, q - 1))}
+            >
+              <Text style={ProductScreenStyles.quantityBtnText}>-</Text>
+            </TouchableOpacity>
+            <Text style={ProductScreenStyles.quantityValue}>{quantity}</Text>
+            <TouchableOpacity
+              style={ProductScreenStyles.quantityBtn}
+              onPress={() => setQuantity(q => q + 1)}
+            >
+              <Text style={ProductScreenStyles.quantityBtnText}>+</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <TouchableOpacity style={ProductScreenStyles.addToCartBtnFixed} onPress={handleAddToCart}>
+          <Text style={ProductScreenStyles.addToCartBtnText}>Add to Cart</Text>
+        </TouchableOpacity>
+        <Snackbar
+          visible={snackbarVisible}
+          onDismiss={onDismissSnackBar}
+          duration={1000}
+          action={{
+            label: 'View Cart',
+            onPress: () => {
+              navigation.navigate('Cart');
+            },
+          }}
+        >
+          Item added to cart!
+        </Snackbar>
       </ScrollView>
-      <TouchableOpacity style={ProductScreenStyles.addToCartBtnFixed}>
-        <Text style={ProductScreenStyles.addToCartBtnText}>Add to Cart</Text>
-      </TouchableOpacity>
     </View>
   );
 };

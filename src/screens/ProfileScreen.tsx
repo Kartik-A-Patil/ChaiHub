@@ -10,7 +10,7 @@ const ProfileScreen = ({ navigation }: any) => {
   const { name, avatar, rating, ratingsCount, joined, menu } = profileData;
 
   const renderMenuItem = ({ item }: any) => (
-    <TouchableOpacity style={ProfileScreenStyles.menuItem}>
+    <TouchableOpacity style={ProfileScreenStyles.menuItem} onPress={() => navigation.navigate(item.route)}>
       <Icon name={item.icon} size={24} style={ProfileScreenStyles.menuIcon} />
       <Text style={ProfileScreenStyles.menuText}>{item.label}</Text>
     </TouchableOpacity>

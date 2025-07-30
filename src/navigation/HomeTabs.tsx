@@ -1,5 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import HomeScreen from '../screens/HomeScreen';
 import CartScreen from '../screens/CartScreen';
@@ -10,8 +11,8 @@ import * as Animatable from 'react-native-animatable';
 
 const Tab = createBottomTabNavigator();
 const HeaderRightBtn = ({ navigation }: { navigation: any }) => (
-  <MaterialCommunityIcons
-    name="cog-outline"
+  <SimpleLineIcons
+    name="settings"
     size={26}
     color="#222"
     style={{ marginRight: 16 }}
@@ -28,7 +29,7 @@ const HeaderStyle = {
 const HomeTabs = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="HomeTab"
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: '#222222',
         tabBarInactiveTintColor: '#575757',
@@ -38,7 +39,7 @@ const HomeTabs = () => {
           let iconName = '';
           if (route.name === 'Cart')
             iconName = focused ? 'cart' : 'cart-outline';
-          else if (route.name === 'Home')
+          else if (route.name === 'HomeTab')
             iconName = focused ? 'home' : 'home-outline';
           else if (route.name === 'Profile')
             iconName = focused ? 'account' : 'account-outline';
@@ -68,7 +69,7 @@ const HomeTabs = () => {
       })}
     >
       <Tab.Screen
-        name="Home"
+        name="HomeTab"
         component={HomeScreen}
         options={({ navigation }) => ({
           headerRight: () => <HeaderRightBtn navigation={navigation} />, 
@@ -77,7 +78,7 @@ const HomeTabs = () => {
             fontWeight: 'regular',
             fontSize: 32,
             fontFamily: 'PlaywriteHU-VariableFont_wght',
-            color: '#000000ff', // chocolate color for extra appeal
+            color: '#000000',
             letterSpacing: 2,
                       },
           headerTitle: 'ChaiHub',

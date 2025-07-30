@@ -7,17 +7,19 @@ import {
   TouchableOpacity,
   Pressable,
 } from 'react-native';
+import Resto from '../assets/Resto.webp';
+
 import NearbyRestaurantsStyles from '../styles/NearbyRestaurantsStyles';
-import { restaurants } from '../data/restaurants';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
+import { useFirestore } from '../contexts/FirestoreContext';
 
 type RootStackParamList = {
   RestaurantMenu: { id: string };
-  // ...other routes
 };
 const NearbyRestaurantsScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const { restaurants } = useFirestore();
   return (
     <View style={NearbyRestaurantsStyles.container}>
       <View style={NearbyRestaurantsStyles.filterRow}>
@@ -40,11 +42,7 @@ const NearbyRestaurantsScreen = () => {
           >
             <View style={NearbyRestaurantsStyles.card}>
               <Image
-                source={
-                  typeof item.image === 'string'
-                    ? { uri: item.image }
-                    : item.image
-                }
+                source={Resto}
                 style={NearbyRestaurantsStyles.image}
                 resizeMode="cover"
               />

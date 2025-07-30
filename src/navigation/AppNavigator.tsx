@@ -2,6 +2,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import LoginScreen from '../screens/LoginScreen';
+import PaymentScreen from '../screens/PaymentScreen';
+import OrderScreen from '../screens/OrderScreen';
 import HomeTabs from './HomeTabs';
 import ProductScreen from '../screens/ProductScreen';
 import RestaurantMenuScreen from '../screens/RestaurantMenuScreen';
@@ -11,6 +13,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import NearbyRestaurantsScreen from '../screens/NearbyRestaurantsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SeedingScreen from '../screens/SeedingScreen';
+import RecentOrdersScreen from '../screens/RecentOrdersScreen';
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -22,6 +25,16 @@ const AppNavigator = () => {
           ...TransitionPresets.SlideFromRightIOS,
           gestureEnabled: true,
         }}>
+        <Stack.Screen
+          name="RecentOrders"
+          component={RecentOrdersScreen}
+          options={{title: 'Recent Orders'}}
+        />
+        <Stack.Screen
+          name="Payment"
+          component={PaymentScreen}
+          options={{title: 'Payment'}}
+        />
         <Stack.Screen
           name="Login"
           component={LoginScreen}
@@ -52,6 +65,12 @@ const AppNavigator = () => {
           component={CartScreen}
           options={{title: 'Cart'}}
         />
+        <Stack.Screen
+          name="Order"
+          component={OrderScreen}
+          options={{title: 'Order'}}
+        />
+        
         <Stack.Screen
           name="Profile"
           component={ProfileScreen}

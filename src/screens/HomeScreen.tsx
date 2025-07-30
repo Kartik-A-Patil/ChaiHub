@@ -1,19 +1,12 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { View, Text, TextInput, Image ,TouchableOpacity} from 'react-native';
+import { ScrollView,  } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const Icon = MaterialCommunityIcons;
-import { featuredItems, specialOffers, quickMenu } from '../data/data';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { homeScreenStyles as styles } from '../styles/HomeScreenStyles';
-
+import { useFirestore } from '../contexts/FirestoreContext';
 type RootStackParamList = {
   Login: undefined;
   Home: undefined;
@@ -23,9 +16,9 @@ type RootStackParamList = {
 
 const HomeScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const { featuredItems, specialOffers, quickMenu } = useFirestore();
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-  
       {/* Search Bar */}
       <TouchableOpacity
         style={styles.searchBox}
@@ -51,7 +44,16 @@ const HomeScreen = () => {
             onPress={() => navigation.navigate('Product', { id: item.id })}
           >
             <View style={styles.featuredItem}>
-              <Image source={item.image} style={styles.featuredImage} />
+              {/* If image is a URL string, use {uri: item.image}, else use item.image directly */}
+              <Image
+                source={
+                  typeof item.image === 'string'
+                    ? { uri: item.image }
+                    : item.image
+                }
+                style={styles.featuredImage}
+                pointerEvents="none"
+              />
             </View>
             <Text style={styles.featuredName}>{item.name}</Text>
           </TouchableOpacity>
@@ -81,7 +83,11 @@ const HomeScreen = () => {
               {rowItems.map(item => (
                 <TouchableOpacity style={styles.quickMenuItem} key={item.id}>
                   <Image source={item.image} style={styles.quickMenuImage} />
-                  <Text style={styles.quickMenuName}>{item.name}</Text>
+                  <Text
+                    style={styles.quickMenuName}
+                  >
+                    {item.name}
+                  </Text>
                 </TouchableOpacity>
               ))}
               {rowItems.length === 1 && (
