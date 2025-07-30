@@ -49,9 +49,87 @@
 	<false/>
 	<key>UIAppFonts</key>
 	<array>
+		<string>Inter-Italic-VariableFont_opsz,wght.ttf</string>
 		<string>Inter-VariableFont_opsz,wght.ttf</string>
+		<string>Inter_18pt-Black.ttf</string>
+		<string>Inter_18pt-BlackItalic.ttf</string>
+		<string>Inter_18pt-Bold.ttf</string>
+		<string>Inter_18pt-BoldItalic.ttf</string>
+		<string>Inter_18pt-ExtraBold.ttf</string>
+		<string>Inter_18pt-ExtraBoldItalic.ttf</string>
+		<string>Inter_18pt-ExtraLight.ttf</string>
+		<string>Inter_18pt-ExtraLightItalic.ttf</string>
+		<string>Inter_18pt-Italic.ttf</string>
+		<string>Inter_18pt-Light.ttf</string>
+		<string>Inter_18pt-LightItalic.ttf</string>
+		<string>Inter_18pt-Medium.ttf</string>
+		<string>Inter_18pt-MediumItalic.ttf</string>
+		<string>Inter_18pt-Regular.ttf</string>
+		<string>Inter_18pt-SemiBold.ttf</string>
+		<string>Inter_18pt-SemiBoldItalic.ttf</string>
+		<string>Inter_18pt-Thin.ttf</string>
+		<string>Inter_18pt-ThinItalic.ttf</string>
+		<string>Inter_24pt-Black.ttf</string>
+		<string>Inter_24pt-BlackItalic.ttf</string>
+		<string>Inter_24pt-Bold.ttf</string>
+		<string>Inter_24pt-BoldItalic.ttf</string>
+		<string>Inter_24pt-ExtraBold.ttf</string>
+		<string>Inter_24pt-ExtraBoldItalic.ttf</string>
+		<string>Inter_24pt-ExtraLight.ttf</string>
+		<string>Inter_24pt-ExtraLightItalic.ttf</string>
+		<string>Inter_24pt-Italic.ttf</string>
+		<string>Inter_24pt-Light.ttf</string>
+		<string>Inter_24pt-LightItalic.ttf</string>
+		<string>Inter_24pt-Medium.ttf</string>
+		<string>Inter_24pt-MediumItalic.ttf</string>
+		<string>Inter_24pt-Regular.ttf</string>
+		<string>Inter_24pt-SemiBold.ttf</string>
+		<string>Inter_24pt-SemiBoldItalic.ttf</string>
+		<string>Inter_24pt-Thin.ttf</string>
+		<string>Inter_24pt-ThinItalic.ttf</string>
+		<string>Inter_28pt-Black.ttf</string>
+		<string>Inter_28pt-BlackItalic.ttf</string>
+		<string>Inter_28pt-Bold.ttf</string>
+		<string>Inter_28pt-BoldItalic.ttf</string>
+		<string>Inter_28pt-ExtraBold.ttf</string>
+		<string>Inter_28pt-ExtraBoldItalic.ttf</string>
+		<string>Inter_28pt-ExtraLight.ttf</string>
+		<string>Inter_28pt-ExtraLightItalic.ttf</string>
+		<string>Inter_28pt-Italic.ttf</string>
+		<string>Inter_28pt-Light.ttf</string>
+		<string>Inter_28pt-LightItalic.ttf</string>
+		<string>Inter_28pt-Medium.ttf</string>
+		<string>Inter_28pt-MediumItalic.ttf</string>
+		<string>Inter_28pt-Regular.ttf</string>
+		<string>Inter_28pt-SemiBold.ttf</string>
+		<string>Inter_28pt-SemiBoldItalic.ttf</string>
+		<string>Inter_28pt-Thin.ttf</string>
+		<string>Inter_28pt-ThinItalic.ttf</string>
 		<string>PlaywriteHU-VariableFont_wght.ttf</string>
+		<string>PlaywriteHU-ExtraLight.ttf</string>
+		<string>PlaywriteHU-Light.ttf</string>
+		<string>PlaywriteHU-Regular.ttf</string>
+		<string>PlaywriteHU-Thin.ttf</string>
+		<string>Raleway-Italic-VariableFont_wght.ttf</string>
 		<string>Raleway-VariableFont_wght.ttf</string>
+		<string>Raleway-Black.ttf</string>
+		<string>Raleway-BlackItalic.ttf</string>
+		<string>Raleway-Bold.ttf</string>
+		<string>Raleway-BoldItalic.ttf</string>
+		<string>Raleway-ExtraBold.ttf</string>
+		<string>Raleway-ExtraBoldItalic.ttf</string>
+		<string>Raleway-ExtraLight.ttf</string>
+		<string>Raleway-ExtraLightItalic.ttf</string>
+		<string>Raleway-Italic.ttf</string>
+		<string>Raleway-Light.ttf</string>
+		<string>Raleway-LightItalic.ttf</string>
+		<string>Raleway-Medium.ttf</string>
+		<string>Raleway-MediumItalic.ttf</string>
+		<string>Raleway-Regular.ttf</string>
+		<string>Raleway-SemiBold.ttf</string>
+		<string>Raleway-SemiBoldItalic.ttf</string>
+		<string>Raleway-Thin.ttf</string>
+		<string>Raleway-ThinItalic.ttf</string>
 		<string>RubikWetPaint-Regular.ttf</string>
 	</array>
 </dict>

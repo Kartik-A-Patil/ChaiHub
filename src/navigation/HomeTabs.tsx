@@ -5,28 +5,26 @@ import HomeScreen from '../screens/HomeScreen';
 import CartScreen from '../screens/CartScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import NearbyRestaurantsScreen from '../screens/NearbyRestaurantsScreen';
-// import SearchScreen from '../screens/SearchScreen';
 import { Text } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 
 const Tab = createBottomTabNavigator();
-const HeaderRightBtn = (navigation: any) => {
-  return (
-    <MaterialCommunityIcons
-      name="cog-outline"
-      size={26}
-      color="#222"
-      style={{ marginRight: 16 }}
-      onPress={() => navigation.navigate('Settings')}
-    />
-  );
-};
+const HeaderRightBtn = ({ navigation }: { navigation: any }) => (
+  <MaterialCommunityIcons
+    name="cog-outline"
+    size={26}
+    color="#222"
+    style={{ marginRight: 16 }}
+    onPress={() => navigation.navigate('Settings')}
+  />
+);
 const HeaderStyle = {
   backgroundColor: '#fff',
   borderBottomWidth: 0,
   elevation: 0,
   shadowOpacity: 0,
 };
-// No shared HeaderTitleStyle object; use inline style for correct type inference
+
 const HomeTabs = () => {
   return (
     <Tab.Navigator
@@ -47,11 +45,13 @@ const HomeTabs = () => {
           if (route.name === 'Nearby')
             iconName = focused ? 'map-marker' : 'map-marker-outline';
           return (
-            <MaterialCommunityIcons
-              name={iconName}
-              color={focused ? '#111' : color}
-              size={24}
-            />
+            <Animatable.View animation={focused ? 'pulse' : ''} iterationCount="infinite">
+              <MaterialCommunityIcons
+                name={iconName}
+                color={focused ? '#111' : color}
+                size={24}
+              />
+            </Animatable.View>
           );
         },
         tabBarLabel: ({ focused, color }) => (
@@ -74,15 +74,12 @@ const HomeTabs = () => {
           headerRight: () => <HeaderRightBtn navigation={navigation} />, 
           headerStyle: HeaderStyle,
           headerTitleStyle: {
-            fontWeight: 'bold',
+            fontWeight: 'regular',
             fontSize: 32,
-            fontFamily: 'Rubik_Wet_Paint',
-            color: '#D2691E', // chocolate color for extra appeal
+            fontFamily: 'PlaywriteHU-VariableFont_wght',
+            color: '#000000ff', // chocolate color for extra appeal
             letterSpacing: 2,
-            textShadowColor: '#b8860b',
-            textShadowOffset: { width: 1, height: 2 },
-            textShadowRadius: 4,
-          },
+                      },
           headerTitle: 'ChaiHub',
         })}
       />
@@ -92,7 +89,7 @@ const HomeTabs = () => {
         options={({ navigation }) => ({
           headerRight: () => <HeaderRightBtn navigation={navigation} />, 
           headerStyle: HeaderStyle,
-          headerTitleStyle: { fontWeight: 'bold', fontSize: 21, fontFamily: 'Raleway' },
+          headerTitleStyle: { fontWeight: 'bold', fontSize: 21, fontFamily: 'Raleway-Regular' },
         })}
       />
       <Tab.Screen
@@ -101,7 +98,7 @@ const HomeTabs = () => {
         options={({ navigation }) => ({
           headerRight: () => <HeaderRightBtn navigation={navigation} />, 
           headerStyle: HeaderStyle,
-          headerTitleStyle: { fontWeight: 'bold', fontSize: 21, fontFamily: 'Raleway' },
+          headerTitleStyle: { fontWeight: 'bold', fontSize: 21, fontFamily: 'Raleway-Regular' },
         })}
       />
       <Tab.Screen
@@ -110,7 +107,7 @@ const HomeTabs = () => {
         options={({ navigation }) => ({
           headerRight: () => <HeaderRightBtn navigation={navigation} />, 
           headerStyle: HeaderStyle,
-          headerTitleStyle: { fontWeight: 'bold', fontSize: 21, fontFamily: 'Raleway' },
+          headerTitleStyle: { fontWeight: 'bold', fontSize: 21, fontFamily: 'Raleway-Regular' },
         })}
       />
     </Tab.Navigator>

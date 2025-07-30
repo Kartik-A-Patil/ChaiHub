@@ -25,14 +25,7 @@ const HomeScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {/* Header */}
-      <View style={styles.headerRow}>
-        <Text style={styles.appTitle}>Chaihub</Text>
-        <TouchableOpacity>
-          <Icon name="cart-outline" style={styles.cartIcon} />
-        </TouchableOpacity>
-      </View>
-
+  
       {/* Search Bar */}
       <TouchableOpacity
         style={styles.searchBox}

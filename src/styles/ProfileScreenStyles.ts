@@ -10,7 +10,7 @@ const ProfileScreenStyles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginTop: 82,
+    marginTop: 20,
     marginBottom: 34,
   },
   avatarWrapper: {

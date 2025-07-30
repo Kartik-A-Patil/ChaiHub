@@ -6,22 +6,7 @@ export const homeScreenStyles = StyleSheet.create({
     ...globalStyles.container,
     backgroundColor: '#fff',
     paddingHorizontal: 20,
-    paddingTop: 40,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  appTitle: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#222',
-  },
-  cartIcon: {
-    fontSize: 28,
-    color: '#222',
+    paddingTop: 16,
   },
   searchBox: {
     flexDirection: 'row',
@@ -30,7 +15,7 @@ export const homeScreenStyles = StyleSheet.create({
     borderRadius: 18,
     paddingHorizontal: 16,
     height: 48,
-    marginBottom: 28,
+    marginBottom: 20,
   },
   searchInput: {
     flex: 1,

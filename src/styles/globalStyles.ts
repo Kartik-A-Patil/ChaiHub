@@ -7,6 +7,6 @@ export const globalStyles = StyleSheet.create({
   },
   text: {
     color: '#222',
-    fontFamily: 'System',
+    fontFamily: 'Raleway-Regular',
   },
 });

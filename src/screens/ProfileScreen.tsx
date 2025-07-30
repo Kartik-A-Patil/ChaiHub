@@ -19,7 +19,6 @@ const ProfileScreen = ({ navigation }: any) => {
   return (
     <View style={[globalStyles.container, { backgroundColor: '#fff', paddingTop: 16 }]}>  
       {/* Header */}
-      <Text style={ProfileScreenStyles.headerTitle}>Account</Text>
       <View style={ProfileScreenStyles.header}>
         <View style={ProfileScreenStyles.avatarWrapper}>
           <Image
