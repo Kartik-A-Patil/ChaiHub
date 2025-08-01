@@ -47,6 +47,13 @@ export const specialOffers = [
       uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAXndPM4X-tu3_xm9yUnwzTyyQXpnRJ6EecP0LGdhsFn2khiWcH8kx17j4mlYRJbpHzho0Mx1vKR0xrYzbxEeRuVjsaK-Qz72Wrl-hmRS0A638MYAd7GxgJUXjBdYM8PbPV-aXUOAqoFj6OluvFusdMNxZprDso-ohaFSvHyn6MgCfWIIIlcl_GnOAdm-pn_0nWseCA8FI6RVeN_WX7eM1uwKTfzqGEjoxXwirBkvK3_T38cldaQEA8lF4tY5U_Vs852w9J1ZI1rygm',
     },
   },
+    {
+    title: '20% off on all orders',
+    subtitle: 'Limited time offer',
+    image: {
+      uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAXndPM4X-tu3_xm9yUnwzTyyQXpnRJ6EecP0LGdhsFn2khiWcH8kx17j4mlYRJbpHzho0Mx1vKR0xrYzbxEeRuVjsaK-Qz72Wrl-hmRS0A638MYAd7GxgJUXjBdYM8PbPV-aXUOAqoFj6OluvFusdMNxZprDso-ohaFSvHyn6MgCfWIIIlcl_GnOAdm-pn_0nWseCA8FI6RVeN_WX7eM1uwKTfzqGEjoxXwirBkvK3_T38cldaQEA8lF4tY5U_Vs852w9J1ZI1rygm',
+    },
+  },
 ];
 
 export const quickMenu = [
@@ -55,27 +62,30 @@ export const quickMenu = [
     image: {
       uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDZiASrlaud-dw_rCZxJEtrUGXNjCWJTQ-d6WKf9NgtXSXVQy7gf6SGUZHKzQAO_E7VIPuD2yf6kq8hxL3KTEcMxG1YJ7zXkSxj3BcGIlrJXaTnm2GLTEebrMyujFbVPHNcm7mTgI0rBLCE4FGvBOtx6CuSewJztLFeo_6QCawHsg5hgm-Cff13P3cGmpWjrqQrKi9aBuufWWr0rDzvXz2n0TKTWc3_hKaWwHAzl9UcNuWfrNZgx3h4xpt0XNYSWDRdADdxV8Ox-6w-',
     },
+    type: 'tea',
   },
   {
     name: 'Coffee',
     image: {
       uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCt5cX1oYu3T_gLwhlvSDrqBePc58_NhVn580xgIQ4TBfcLFODxo9xCf4EU5HtKQo6y_wJ3uqLxw86ZIjjhOmNw9TU9OqV20gjdqR6x1GtK_yZGEk8r3MkO24tsHAbMMX669eWtxaDRRXfnNXZeUsf1vMDylc3md8jIIuN51xK-Yz9FRvcObwozql007xKHL-tAbLx7iToHoqLPs5mwfgH7-EM14yy3zn1aAnzAZOdhstW7Xf48HmW8LGyOvqfo6pUXe62jM0RqwC65',
     },
+    type: 'coffee',
   },
   {
     name: 'Snacks',
     image: {
       uri: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAqhHbCgi_KbGEfQtiZjLnE9IARzIiJ5lEqbVSD2wX1CRxDJoKPk6cCsH8tMuWIw8cmgwJVmV6eDfh5Lz0gfrqgNGJsQTNEwESqsax-OmwaIzVJLzNKG9YBZ3b_GwLlbPtccaAvSxs2STHBI_SEUYDc4DCJDWkSjXjYv8MMU7qnEMD9AbL8xhv4Y16TNp-uzagYYXq_IhqV1BoKOINP6daHlDcnA-40KbwNMoIQv4SDDyax0WqaICfU8edcLbPD5lRgFTPnJ3k0mIoU',
     },
+    type: 'snacks',
   },
 ];
 
 // Mock profile data for ProfileScreen
 export const profileData = {
-  name: 'Sophia Chen',
+  name: 'John Doe',
   avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBwScEbIYVYZ0EJkJtwDBy447WXvYsihNSq_mt7uQvuqjkcXswJ3G5nGr30hVjJr1I74M1uMndhbEPGTITvsPhi5cftKge6j1ZvEtw9TPR0QVgL9Q6yCiLyPcZY9cUIvOGq1Atoh400gmylRQlQwRL5n-Tu5HDRrcti1rYZ2X-YQmEoH3Tam1oWxmD8Pvu_g_nNla8SuYQqbNImZ7vbgf5Eyd8p54bbWPZJ9cWLwuRTrcr6kvlvBkhyDf_saTjkA4tiEmC0mnzQgSsx',
-  rating: 4.9,
-  ratingsCount: 100,
+  rating: 4,
+  ratingsCount: 40,
   joined: '2 years ago',
   menu: [
     {

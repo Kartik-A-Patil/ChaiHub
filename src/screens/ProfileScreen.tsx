@@ -1,35 +1,38 @@
-
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { globalStyles } from '../styles/globalStyles';
 import ProfileScreenStyles from '../styles/ProfileScreenStyles';
 import { profileData } from '../data/data';
-
+import ProfileImage from '../assets/Profile.png';
 const ProfileScreen = ({ navigation }: any) => {
   const { name, avatar, rating, ratingsCount, joined, menu } = profileData;
 
   const renderMenuItem = ({ item }: any) => (
-    <TouchableOpacity style={ProfileScreenStyles.menuItem} onPress={() => navigation.navigate(item.route)}>
+    <TouchableOpacity
+      style={ProfileScreenStyles.menuItem}
+      onPress={() => navigation.navigate(item.route)}
+    >
       <Icon name={item.icon} size={24} style={ProfileScreenStyles.menuIcon} />
       <Text style={ProfileScreenStyles.menuText}>{item.label}</Text>
     </TouchableOpacity>
   );
 
   return (
-    <View style={[globalStyles.container, { backgroundColor: '#fff', paddingTop: 16 }]}>  
+    <View
+      style={[
+        globalStyles.container,
+        { backgroundColor: '#fff', paddingTop: 16 },
+      ]}
+    >
       {/* Header */}
       <View style={ProfileScreenStyles.header}>
         <View style={ProfileScreenStyles.avatarWrapper}>
-          <Image
-            source={{ uri: avatar }}
-            style={ProfileScreenStyles.avatar}
-          />
+          <Image source={ProfileImage} style={ProfileScreenStyles.avatar} />
         </View>
         <Text style={ProfileScreenStyles.name}>{name}</Text>
         <Text style={ProfileScreenStyles.subtitle}>
-          {rating} • {ratingsCount}+
-          {' ratings'}
+          {rating} • {ratingsCount}+{' ratings'}
         </Text>
         <Text style={ProfileScreenStyles.joined}>Joined {joined}</Text>
       </View>
@@ -38,7 +41,7 @@ const ProfileScreen = ({ navigation }: any) => {
       <Text style={ProfileScreenStyles.sectionTitle}>Account</Text>
       <FlatList
         data={menu}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.label}
         renderItem={renderMenuItem}
         contentContainerStyle={ProfileScreenStyles.menuList}
         showsVerticalScrollIndicator={false}

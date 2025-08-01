@@ -90,7 +90,7 @@ const HomeTabs = () => {
         options={({ navigation }) => ({
           headerRight: () => <HeaderRightBtn navigation={navigation} />, 
           headerStyle: HeaderStyle,
-          headerTitleStyle: { fontWeight: 'bold', fontSize: 21, fontFamily: 'Raleway-Regular' },
+          headerTitleStyle: { fontWeight: 'regular', fontSize: 21, fontFamily: 'PlaywriteHU-VariableFont_wght' },
         })}
       />
       <Tab.Screen
@@ -99,7 +99,7 @@ const HomeTabs = () => {
         options={({ navigation }) => ({
           headerRight: () => <HeaderRightBtn navigation={navigation} />, 
           headerStyle: HeaderStyle,
-          headerTitleStyle: { fontWeight: 'bold', fontSize: 21, fontFamily: 'Raleway-Regular' },
+          headerTitleStyle: { fontWeight: 'regular', fontSize: 21, fontFamily: 'PlaywriteHU-VariableFont_wght' },
         })}
       />
       <Tab.Screen
@@ -108,7 +108,7 @@ const HomeTabs = () => {
         options={({ navigation }) => ({
           headerRight: () => <HeaderRightBtn navigation={navigation} />, 
           headerStyle: HeaderStyle,
-          headerTitleStyle: { fontWeight: 'bold', fontSize: 21, fontFamily: 'Raleway-Regular' },
+          headerTitleStyle: { fontWeight: 'regular', fontSize: 21, fontFamily: 'PlaywriteHU-VariableFont_wght' },
         })}
       />
     </Tab.Navigator>

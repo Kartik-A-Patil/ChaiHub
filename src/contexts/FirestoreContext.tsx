@@ -47,20 +47,16 @@ interface FirestoreContextProps {
   restaurants: Restaurant[];
   offerBanners: OfferBanner[];
   cartItems: CartItem[];
-  featuredItems: FeaturedItem[];
   specialOffers: SpecialOffer[];
-  quickMenu: QuickMenuItem[];
   profileData: ProfileData[];
   loading: boolean;
   fetchProducts: () => Promise<void>;
+  fetchProductsByType: (type: string) => Promise<Product[]>;
   fetchRestaurants: () => Promise<void>;
   fetchOfferBanners: () => Promise<void>;
   fetchCartItems: () => Promise<void>;
-  fetchFeaturedItems: () => Promise<void>;
   fetchSpecialOffers: () => Promise<void>;
-  fetchQuickMenu: () => Promise<void>;
   fetchProfileData: () => Promise<void>;
-  logAllData: () => void;
 }
 
 const FirestoreContext = createContext<FirestoreContextProps | undefined>(
@@ -72,101 +68,79 @@ export const FirestoreProvider = ({ children }: { children: ReactNode }) => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [offerBanners, setOfferBanners] = useState<OfferBanner[]>([]);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [featuredItems, setFeaturedItems] = useState<FeaturedItem[]>([]);
   const [specialOffers, setSpecialOffers] = useState<SpecialOffer[]>([]);
-  const [quickMenu, setQuickMenu] = useState<QuickMenuItem[]>([]);
   const [profileData, setProfileData] = useState<ProfileData[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [pendingRequests, setPendingRequests] = useState(0);
+  const loading = pendingRequests > 0;
 
-  // Log all Firestore data to the console for testing
-  const logAllData = () => {
-    console.log('Products:', products);
-    console.log('Restaurants:', restaurants);
-    console.log('Offer Banners:', offerBanners);
-    console.log('Cart Items:', cartItems);
-    console.log('Featured Items:', featuredItems);
-    console.log('Special Offers:', specialOffers);
-    console.log('Quick Menu:', quickMenu);
-    console.log('Profile Data:', profileData);
-  };
   const fetchCartItems = async () => {
-    setLoading(true);
+    setPendingRequests(prev => prev + 1);
     try {
       const snapshot = await getDocs(collection(firestore(), 'cartItems'));
-  setCartItems(snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })));
+      setCartItems(
+        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
+      );
     } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchFeaturedItems = async () => {
-    setLoading(true);
-    try {
-      const snapshot = await getDocs(collection(firestore(), 'featuredItems'));
-  setFeaturedItems(snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })));
-    } finally {
-      setLoading(false);
+      setPendingRequests(prev => prev - 1);
     }
   };
 
   const fetchSpecialOffers = async () => {
-    setLoading(true);
+    setPendingRequests(prev => prev + 1);
     try {
       const snapshot = await getDocs(collection(firestore(), 'specialOffers'));
-  setSpecialOffers(snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })));
+      setSpecialOffers(
+        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
+      );
     } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchQuickMenu = async () => {
-    setLoading(true);
-    try {
-      const snapshot = await getDocs(collection(firestore(), 'quickMenu'));
-  setQuickMenu(snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })));
-    } finally {
-      setLoading(false);
+      setPendingRequests(prev => prev - 1);
     }
   };
 
   const fetchProfileData = async () => {
-    setLoading(true);
+    setPendingRequests(prev => prev + 1);
     try {
       const snapshot = await getDocs(collection(firestore(), 'profileData'));
-  setProfileData(snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })));
+      setProfileData(
+        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
+      );
     } finally {
-      setLoading(false);
+      setPendingRequests(prev => prev - 1);
     }
   };
   const fetchProducts = async () => {
-    setLoading(true);
+    setPendingRequests(prev => prev + 1);
     try {
       const snapshot = await getDocs(collection(firestore(), 'products'));
-  setProducts(snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })));
+      setProducts(
+        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
+      );
     } finally {
-      setLoading(false);
+      setPendingRequests(prev => prev - 1);
     }
   };
 
   const fetchRestaurants = async () => {
-    setLoading(true);
+    setPendingRequests(prev => prev + 1);
     try {
       const snapshot = await getDocs(collection(firestore(), 'restaurants'));
-  setRestaurants(snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })));
+      setRestaurants(
+        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
+      );
     } finally {
-      setLoading(false);
+      setPendingRequests(prev => prev - 1);
     }
   };
 
   const fetchOfferBanners = async () => {
-    setLoading(true);
+    setPendingRequests(prev => prev + 1);
     try {
       const snapshot = await getDocs(collection(firestore(), 'offerBanners'));
       setOfferBanners(
         snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
       );
     } finally {
-      setLoading(false);
+      setPendingRequests(prev => prev - 1);
     }
   };
 
@@ -175,11 +149,24 @@ export const FirestoreProvider = ({ children }: { children: ReactNode }) => {
     fetchRestaurants();
     fetchOfferBanners();
     fetchCartItems();
-    fetchFeaturedItems();
     fetchSpecialOffers();
-    fetchQuickMenu();
     fetchProfileData();
   }, []);
+
+  // Fetch products by type (do not cache, fetch only when required)
+  const fetchProductsByType = async (type: string): Promise<Product[]> => {
+    setPendingRequests(prev => prev + 1);
+    try {
+      const q = query(
+        collection(firestore(), 'products'),
+        where('type', '==', type),
+      );
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
+    } finally {
+      setPendingRequests(prev => prev - 1);
+    }
+  };
 
   return (
     <FirestoreContext.Provider
@@ -188,20 +175,16 @@ export const FirestoreProvider = ({ children }: { children: ReactNode }) => {
         restaurants,
         offerBanners,
         cartItems,
-        featuredItems,
         specialOffers,
-        quickMenu,
         profileData,
         loading,
         fetchProducts,
         fetchRestaurants,
         fetchOfferBanners,
         fetchCartItems,
-        fetchFeaturedItems,
         fetchSpecialOffers,
-        fetchQuickMenu,
         fetchProfileData,
-        logAllData,
+        fetchProductsByType,
       }}
     >
       {children}

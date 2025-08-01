@@ -5,7 +5,7 @@ export const homeScreenStyles = StyleSheet.create({
   container: {
     ...globalStyles.container,
     backgroundColor: '#fff',
-    paddingTop: 16,
+
   },
   searchBox: {
     flexDirection: 'row',
@@ -31,15 +31,15 @@ export const homeScreenStyles = StyleSheet.create({
     marginHorizontal: 20,
   },
   featuredRow: {
-    gap: 6,
-    marginBottom: 24,
+    gap: 3,
+    marginBottom: 5,
   },
   featuredItemContainer: {
-    width: 220,
+    width: 250,
     flex: 1,
     overflow: 'hidden',
-    marginRight: 5,
-    marginLeft: 20,
+    marginRight: 0,
+    marginLeft: 15,
   },
   featuredItem: {
     backgroundColor: '#ffffffff',
@@ -65,6 +65,12 @@ export const homeScreenStyles = StyleSheet.create({
     marginBottom: 24,
     gap: 16,
     marginHorizontal: 20,
+    borderColor: '#b4b4b4ff',
+    borderWidth: 0.4,
+    borderBottomWidth: 0.4,
+    borderRadius: 12,
+    padding: 5,
+    paddingLeft: 12,
   },
   offerText: {
     flex: 1,
@@ -82,7 +88,7 @@ export const homeScreenStyles = StyleSheet.create({
   offerImage: {
     width: 80,
     height: 60,
-    borderRadius: 12,
+    borderRadius: 10,
     resizeMode: 'cover',
   },
   quickMenuTitle: {
@@ -105,20 +111,20 @@ export const homeScreenStyles = StyleSheet.create({
   quickMenuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 16,
-    padding:10,
+    borderRadius: 12,
     borderColor: '#E0E0E0',
     borderWidth: 1,
     width: '48%', // 2 per row with margin
     marginRight: 0,
     marginLeft: 0,
     backgroundColor: '#fff',
+    padding: 5,
   },
   quickMenuImage: {
-    width: 58,
-    height: 54,
-    borderRadius: 12,
-    marginRight: 12,
+    width: 60,
+    height: 60,
+    borderRadius: 10,
+    marginRight: 14,
     resizeMode: 'cover',
   },
   quickMenuName: {
@@ -126,4 +132,10 @@ export const homeScreenStyles = StyleSheet.create({
     fontWeight: '500',
     color: '#222',
   },
+  skeletonItem: {
+    backgroundColor: '#E0E0E0',
+    borderRadius: 12,
+    marginBottom: 12,
+  },
 });
+('');

@@ -17,6 +17,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import SeedingScreen from '../screens/SeedingScreen';
 import RecentOrdersScreen from '../screens/RecentOrdersScreen';
 import OrderDetailScreen from '../screens/OrderDetailScreen';
+import ProductTypeScreen from '../screens/ProductTypeScreen';
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
@@ -27,6 +28,17 @@ const AppNavigator = () => {
         screenOptions={{
           ...TransitionPresets.SlideFromRightIOS,
           gestureEnabled: true,
+          headerStyle: {
+            backgroundColor: '#f7f7f7',
+            borderBottomWidth: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+          },
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontSize: 18,
+            fontFamily: 'PlaywriteHU-VariableFont_wght',
+          },
         }}
       >
         <Stack.Screen
@@ -53,6 +65,11 @@ const AppNavigator = () => {
           name="Product"
           component={ProductScreen}
           options={{ title: 'Product' }}
+        />
+        <Stack.Screen
+          name="ProductType"
+          component={ProductTypeScreen}
+          options={{ title: 'Product Type' }}
         />
         <Stack.Screen
           name="RestaurantMenu"

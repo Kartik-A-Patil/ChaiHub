@@ -20,7 +20,7 @@ function App() {
     <Provider store={store}>
       <FirestoreProvider>
         <PaperProvider>
-          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+          <StatusBar barStyle={'dark-content'} backgroundColor="transparent" translucent />
           <AppNavigator />
         </PaperProvider>
       </FirestoreProvider>

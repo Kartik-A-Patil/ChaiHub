@@ -112,7 +112,7 @@ const CartScreen = () => {
           })}
         </ScrollView>
 
-        {/* Payment Section at Bottom - Total and Order button in a single row */}
+        {/* Payment Section*/}
         <View
           style={[
             styles.checkoutContainer,
@@ -132,7 +132,6 @@ const CartScreen = () => {
             <Text
               style={[styles.paymentLabel, { maxWidth: 80 }]}
               numberOfLines={1}
-              ellipsizeMode="tail"
             >
               Total
             </Text>

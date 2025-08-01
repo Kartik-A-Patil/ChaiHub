@@ -23,8 +23,23 @@ const ProductScreen: React.FC = () => {
   // Find product by id from products array
   const product = products.find(p => p.id === id);
 
-  const [selectedSize, setSelectedSize] = useState('Medium');
-  const [selectedSweetness, setSelectedSweetness] = useState('Regular');
+  // Determine available options based on product type
+  let availableSizes: string[] = [];
+  let availableSweetness: string[] = [];
+  if (product?.type === 'coffee' || product?.type === 'tea') {
+    availableSizes = SIZES;
+    availableSweetness = SWEETNESS;
+  } else if (product?.type === 'snacks') {
+    availableSizes = SIZES;
+    availableSweetness = [];
+  } else if (product?.type === 'others') {
+    availableSizes = SIZES;
+    availableSweetness = [];
+  }
+
+  // Set default selections based on available options
+  const [selectedSize, setSelectedSize] = useState(availableSizes[1] || '');
+  const [selectedSweetness, setSelectedSweetness] = useState(availableSweetness[1] || '');
   const [quantity, setQuantity] = useState(1);
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -73,63 +88,73 @@ const ProductScreen: React.FC = () => {
 
         {/* Optionally, you can add more product details here if available in the data */}
 
-        <Text style={ProductScreenStyles.sectionLabel}>Size</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{ marginBottom: 12 }}
-        >
-          <View style={ProductScreenStyles.optionRow}>
-            {SIZES.map(size => (
-              <TouchableOpacity
-                key={size}
-                style={[
-                  ProductScreenStyles.optionBtn,
-                  selectedSize === size && ProductScreenStyles.optionBtnActive,
-                ]}
-                onPress={() => setSelectedSize(size)}
-              >
-                <Text
-                  style={[
-                    ProductScreenStyles.optionBtnText,
-                    selectedSize === size && ProductScreenStyles.optionBtnTextActive,
-                  ]}
-                >
-                  {size}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView>
+        {/* Size Option (always shown if available) */}
+        {availableSizes.length > 0 && (
+          <>
+            <Text style={ProductScreenStyles.sectionLabel}>Size</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginBottom: 12 }}
+            >
+              <View style={ProductScreenStyles.optionRow}>
+                {availableSizes.map(size => (
+                  <TouchableOpacity
+                    key={size}
+                    style={[
+                      ProductScreenStyles.optionBtn,
+                      selectedSize === size && ProductScreenStyles.optionBtnActive,
+                    ]}
+                    onPress={() => setSelectedSize(size)}
+                  >
+                    <Text
+                      style={[
+                        ProductScreenStyles.optionBtnText,
+                        selectedSize === size && ProductScreenStyles.optionBtnTextActive,
+                      ]}
+                    >
+                      {size}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+          </>
+        )}
 
-        <Text style={ProductScreenStyles.sectionLabel}>Sweetness</Text>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={{ marginBottom: 12 }}
-        >
-          <View style={ProductScreenStyles.optionRow}>
-            {SWEETNESS.map(level => (
-              <TouchableOpacity
-                key={level}
-                style={[
-                  ProductScreenStyles.optionBtn,
-                  selectedSweetness === level && ProductScreenStyles.optionBtnActive,
-                ]}
-                onPress={() => setSelectedSweetness(level)}
-              >
-                <Text
-                  style={[
-                    ProductScreenStyles.optionBtnText,
-                    selectedSweetness === level && ProductScreenStyles.optionBtnTextActive,
-                  ]}
-                >
-                  {level}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView>
+        {/* Sweetness Option (only for coffee/tea) */}
+        {availableSweetness.length > 0 && (
+          <>
+            <Text style={ProductScreenStyles.sectionLabel}>Sweetness</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginBottom: 12 }}
+            >
+              <View style={ProductScreenStyles.optionRow}>
+                {availableSweetness.map(level => (
+                  <TouchableOpacity
+                    key={level}
+                    style={[
+                      ProductScreenStyles.optionBtn,
+                      selectedSweetness === level && ProductScreenStyles.optionBtnActive,
+                    ]}
+                    onPress={() => setSelectedSweetness(level)}
+                  >
+                    <Text
+                      style={[
+                        ProductScreenStyles.optionBtnText,
+                        selectedSweetness === level && ProductScreenStyles.optionBtnTextActive,
+                      ]}
+                    >
+                      {level}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+          </>
+        )}
 
         {/* Quantity Selector */}
         <View style={ProductScreenStyles.quantityContainer}>

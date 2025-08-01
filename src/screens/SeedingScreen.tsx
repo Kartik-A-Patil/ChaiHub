@@ -12,15 +12,6 @@ import {
 } from '../data/data';
 
 const SeedingScreen = () => {
-
-  // Helper to get random restaurantId from available restaurants
-  const getRandomRestaurantId = () => {
-    // Assume restaurant IDs are r1, r2, ... based on seedData
-    const ids = seedRestaurantsData.map((_, idx) => `r${idx + 1}`);
-    return ids[Math.floor(Math.random() * ids.length)];
-  };
-
-
   const seedProducts = async () => {
     try {
       const productsCollection = firestore().collection('products');
