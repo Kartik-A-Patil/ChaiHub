@@ -10,8 +10,6 @@ import firestore, {
   collection,
   query,
   where,
-  doc,
-  getDoc,
 } from '@react-native-firebase/firestore';
 
 interface Product {
@@ -29,15 +27,11 @@ interface OfferBanner {
 interface CartItem {
   [key: string]: any;
 }
-interface FeaturedItem {
-  [key: string]: any;
-}
+
 interface SpecialOffer {
   [key: string]: any;
 }
-interface QuickMenuItem {
-  [key: string]: any;
-}
+
 interface ProfileData {
   [key: string]: any;
 }
@@ -78,7 +72,7 @@ export const FirestoreProvider = ({ children }: { children: ReactNode }) => {
     try {
       const snapshot = await getDocs(collection(firestore(), 'cartItems'));
       setCartItems(
-        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
+        snapshot.docs.map((document: any) => ({ id: document.id, ...document.data() })),
       );
     } finally {
       setPendingRequests(prev => prev - 1);
@@ -90,7 +84,7 @@ export const FirestoreProvider = ({ children }: { children: ReactNode }) => {
     try {
       const snapshot = await getDocs(collection(firestore(), 'specialOffers'));
       setSpecialOffers(
-        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
+        snapshot.docs.map((document: any) => ({ id: document.id, ...document.data() })),
       );
     } finally {
       setPendingRequests(prev => prev - 1);
@@ -102,7 +96,7 @@ export const FirestoreProvider = ({ children }: { children: ReactNode }) => {
     try {
       const snapshot = await getDocs(collection(firestore(), 'profileData'));
       setProfileData(
-        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
+        snapshot.docs.map((document: any) => ({ id: document.id, ...document.data() })),
       );
     } finally {
       setPendingRequests(prev => prev - 1);
@@ -113,7 +107,7 @@ export const FirestoreProvider = ({ children }: { children: ReactNode }) => {
     try {
       const snapshot = await getDocs(collection(firestore(), 'products'));
       setProducts(
-        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
+        snapshot.docs.map((document: any) => ({ id: document.id, ...document.data() })),
       );
     } finally {
       setPendingRequests(prev => prev - 1);
@@ -125,7 +119,7 @@ export const FirestoreProvider = ({ children }: { children: ReactNode }) => {
     try {
       const snapshot = await getDocs(collection(firestore(), 'restaurants'));
       setRestaurants(
-        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
+        snapshot.docs.map((document: any) => ({ id: document.id, ...document.data() })),
       );
     } finally {
       setPendingRequests(prev => prev - 1);
@@ -137,7 +131,7 @@ export const FirestoreProvider = ({ children }: { children: ReactNode }) => {
     try {
       const snapshot = await getDocs(collection(firestore(), 'offerBanners'));
       setOfferBanners(
-        snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() })),
+        snapshot.docs.map((document: any) => ({ id: document.id, ...document.data() })),
       );
     } finally {
       setPendingRequests(prev => prev - 1);

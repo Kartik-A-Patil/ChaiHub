@@ -23,7 +23,7 @@ const LoginScreen = () => {
   const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth(), email, password);
-      navigation.navigate('Home');
+      navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
     } catch (error) {
       console.error('Error logging in:', error);
       Alert.alert('Login Error', 'Error logging in. Please check your credentials.');
@@ -41,7 +41,7 @@ const LoginScreen = () => {
       const googleCredential = GoogleAuthProvider.credential(idToken, accessToken);
       // Sign-in the user with the credential
       await signInWithCredential(auth(), googleCredential);
-      navigation.navigate('Home');
+      navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
     } catch (error) {
       console.error('Error with Google sign-in:', error);
     } finally {
@@ -52,7 +52,7 @@ const LoginScreen = () => {
   const handleGuestSignIn = async () => {
     try {
       await signInAnonymously(auth());
-      navigation.navigate('Home');
+      navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
     } catch (error) {
       console.error('Error with guest sign-in:', error);
     }

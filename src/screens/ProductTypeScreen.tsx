@@ -2,243 +2,279 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  SectionList,
+  FlatList,
   ActivityIndicator,
   Image,
   TouchableOpacity,
+  StyleSheet,
+  Animated,
+  Easing,
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useFirestore } from '../contexts/FirestoreContext';
-import { homeScreenStyles as styles } from '../styles/HomeScreenStyles';
 import imageMap from '../utils/imageMap';
 type RootStackParamList = {
   ProductType: { type: string };
   Product: { id: string };
 };
-
+import { styles } from '../styles/ProductTypeScreenStyles';
 const ProductTypeScreen = () => {
   const route = useRoute();
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { fetchProductsByType, restaurants, loading } = useFirestore();
-  const [sections, setSections] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const type = (route.params as any)?.type;
+
+  // Animation values
+  const [slideAnim] = useState(new Animated.Value(-100));
+  const [fadeAnim] = useState(new Animated.Value(0));
+  const [pourAnim] = useState(new Animated.Value(0));
 
   useEffect(() => {
     if (type) {
       const capitalizedType = type.charAt(0).toUpperCase() + type.slice(1);
       navigation.setOptions({ title: capitalizedType });
+
+      // Reset animation values
+      slideAnim.setValue(-100);
+      fadeAnim.setValue(0);
+      pourAnim.setValue(0);
+
+      // Start animations
+      Animated.parallel([
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 600,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      // Pour animation for tea/coffee
+      if (type === 'tea' || type === 'coffee') {
+        setTimeout(() => {
+          Animated.loop(
+            Animated.sequence([
+              Animated.timing(pourAnim, {
+                toValue: 1,
+                duration: 2000,
+                easing: Easing.inOut(Easing.quad),
+                useNativeDriver: true,
+              }),
+              Animated.timing(pourAnim, {
+                toValue: 0,
+                duration: 1000,
+                useNativeDriver: true,
+              }),
+            ]),
+          ).start();
+        }, 800);
+      }
+
       fetchProductsByType(type)
-        .then(products => {
-          // Group products by restaurantId
-          const grouped: { [key: string]: any[] } = {};
-          products.forEach(prod => {
-            if (!grouped[prod.restaurantId]) grouped[prod.restaurantId] = [];
-            grouped[prod.restaurantId].push(prod);
-          });
-          // Build sections with restaurant info
-          let sections = Object.keys(grouped)
-            .map(rid => {
-              const restaurant = restaurants.find(r => r.id === rid);
+        .then(fetchedProducts => {
+          // Combine products with restaurant info and sort by restaurant rating
+          const enrichedProducts = fetchedProducts
+            .map(product => {
+              const restaurant = restaurants.find(
+                r => r.id === product.restaurantId,
+              );
               return {
+                ...product,
                 restaurant,
-                data: grouped[rid],
+                restaurantRating: restaurant?.rating
+                  ? parseFloat(restaurant.rating)
+                  : 0,
               };
             })
-            .filter(section => section.restaurant); // Only show if restaurant exists
-          // Sort by distance (assuming distance is a string like '0.5 km')
-          sections = sections.sort((a, b) => {
-            const getDist = (r: any) => {
-              const d = r?.restaurant?.distance;
-              if (!d) return 9999;
-              const num = parseFloat(d);
-              return isNaN(num) ? 9999 : num;
-            };
-            return getDist(a) - getDist(b);
-          });
-          setSections(sections);
+            .filter(product => product.restaurant) // Only include products with valid restaurants
+            .sort((a, b) => b.restaurantRating - a.restaurantRating); // Sort by restaurant rating descending
+
+          setProducts(enrichedProducts);
         })
         .catch(() => setError('Failed to fetch products.'));
     }
-  }, [type, restaurants, navigation]);
+  }, [type, restaurants, navigation, slideAnim, fadeAnim, pourAnim]);
+
+  const renderAnimatedHeader = () => {
+    const getAnimationEmoji = () => {
+      switch (type?.toLowerCase()) {
+        case 'tea':
+          return '🫖';
+        case 'coffee':
+          return '☕';
+        case 'snacks':
+          return '🍿';
+        case 'desserts':
+          return '🧁';
+        case 'beverages':
+          return '🥤';
+        default:
+          return '🍽️';
+      }
+    };
+
+    const getAnimationText = () => {
+      switch (type?.toLowerCase()) {
+        case 'tea':
+          return 'Brewing the perfect cup';
+        case 'coffee':
+          return 'Grinding fresh beans';
+        case 'snacks':
+          return 'Crispy & delicious';
+        case 'desserts':
+          return 'Sweet indulgence';
+        case 'beverages':
+          return 'Refreshing drinks';
+        default:
+          return 'Delicious options';
+      }
+    };
+
+    if (!type) return null;
+
+    return (
+      <Animated.View
+        style={[
+          styles.animatedHeader,
+          {
+            transform: [{ translateY: slideAnim }],
+            opacity: fadeAnim,
+          },
+        ]}
+      >
+        <Animated.Text
+          style={[
+            styles.animatedEmoji,
+            {
+              transform: [
+                {
+                  rotate:
+                    type === 'tea' || type === 'coffee'
+                      ? pourAnim.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: ['0deg', '15deg'],
+                        })
+                      : '0deg',
+                },
+              ],
+            },
+          ]}
+        >
+          {getAnimationEmoji()}
+        </Animated.Text>
+        <Animated.Text style={[styles.animatedText, { opacity: fadeAnim }]}>
+          {getAnimationText()}
+        </Animated.Text>
+        <View style={styles.separator} />
+      </Animated.View>
+    );
+  };
 
   if (loading) {
     return (
-      <ActivityIndicator
-        style={{ flex: 1, marginTop: 40 }}
-        size="large"
-        color="#8B857B"
-      />
-    );
-  }
-  if (error) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>{error}</Text>
+      <View style={styles.container}>
+        <View style={styles.loadingContainer}>
+          {renderAnimatedHeader()}
+          <ActivityIndicator size="large" color="#C99E71" />
+        </View>
       </View>
     );
   }
 
-  return (
-    <View style={[styles.container, { backgroundColor: '#FAFAFA' }]}> 
-      <SectionList
-        sections={sections}
-        style={{ paddingHorizontal: 5}}
-        keyExtractor={item => item.id}
-        renderSectionHeader={({ section }) => {
-          const sectionIndex = sections.findIndex(s => s.restaurant?.id === section.restaurant?.id);
-          return (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginBottom: 10,
-                marginTop: 20,
-                marginHorizontal: 18,
-                backgroundColor: 'transparent',
-                // Add border between sections except the first
-                borderTopWidth: sectionIndex !== 0 ? 1 : 0,
-                borderTopColor: sectionIndex !== 0 ? '#ECECEC' : 'transparent',
-                paddingTop: sectionIndex !== 0 ? 18 : 0,
-              }}
-            >
-              <Image
-                source={
-                  typeof section.restaurant.image === 'string' &&
-                  imageMap[section.restaurant.image]
-                    ? imageMap[section.restaurant.image]
-                    : section.restaurant.image
-                }
-                style={{
-                  width: 58,
-                  height: 58,
-                  borderRadius: 10,
-                  marginRight: 12,
-                  backgroundColor: '#F0F0F0',
-                }}
-              />
-              <View style={{ flex: 1 }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 17,
-                      fontWeight: '700',
-                      color: '#232323',
-                      letterSpacing: 0.2,
-                    }}
-                  >
-                    {section.restaurant.name}
-                  </Text>
-                  <Text
-                    style={{
-                      color: '#B0AFAF',
-                      fontSize: 12,
-                      marginLeft: 10,
-                      fontWeight: '500',
-                    }}
-                  >
-                    {section.restaurant.distance}
-                  </Text>
-                </View>
-                <Text style={{ color: '#8B857B', fontSize: 12, marginTop: 2 }}>
-                  {section.restaurant.address}
-                </Text>
-                <Text style={{ color: '#B0AFAF', fontSize: 11, marginTop: 2 }}>
-                  Open until {section.restaurant.openUntil} |{' '}
-                  <Text style={{ color: '#FFC107', fontWeight: 'bold' }}>
-                    {section.restaurant.rating}★
-                  </Text>{' '}
-                  ({section.restaurant.reviews} reviews)
-                </Text>
-              </View>
-            </View>
-          );
-        }}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={{
-              borderRadius: 16,
-              marginHorizontal: 18,
-              marginBottom: 14,
-              padding: 0,
-              flexDirection: 'row',
-              alignItems: 'center',
-              minHeight: 110,
-            }}
-            activeOpacity={0.85}
-            onPress={() => navigation.navigate('Product', { id: item.id })}
-          >
-            <View
-              style={{
-                flex: 1,
-                paddingLeft: 16,
-                paddingVertical: 12,
-                justifyContent: 'center',
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: '700',
-                  color: '#232323',
-                  marginBottom: 2,
-                }}
-              >
-                {item.name}
-              </Text>
-              <Text
-                style={{ color: '#8B857B', fontSize: 12, marginBottom: 4 }}
-                numberOfLines={2}
-              >
-                {item.description}
-              </Text>
-              <Text
-                style={{ color: '#232323', fontWeight: 'bold', fontSize: 15 }}
-              >
-                ₹{item.price}
-              </Text>
-            </View>
-            <Image
-              source={
-                typeof item.image === 'string' && imageMap[item.image]
-                  ? imageMap[item.image]
-                  : item.image
-              }
-              style={{
-                width: 90,
-                height: 90,
-                borderRadius: 16,
-                marginRight: 16,
-                backgroundColor: '#F0F0F0',
-              }}
-            />
-          </TouchableOpacity>
-        )}
-        ListEmptyComponent={
-          <Text
-            style={{
-              textAlign: 'center',
-              marginTop: 60,
-              color: '#B0AFAF',
-              fontSize: 16,
-            }}
-          >
-            No products found.
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Oops! Something went wrong</Text>
+          <Text style={styles.errorSubtext}>{error}</Text>
+        </View>
+      </View>
+    );
+  }
+
+  const renderProductItem = ({ item }: { item: any }) => (
+    <TouchableOpacity
+      style={styles.productCard}
+      activeOpacity={0.7}
+      onPress={() => navigation.navigate('Product', { id: item.id })}
+    >
+      <View style={styles.productImageContainer}>
+        <Image
+          source={
+            typeof item.image === 'string' && imageMap[item.image]
+              ? imageMap[item.image]
+              : item.image
+          }
+          style={styles.productImage}
+        />
+      </View>
+
+      <View style={styles.productInfo}>
+        <Text style={styles.productName}>{item.name}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Text style={styles.restaurantName}>{item.restaurant?.name}</Text>
+          <Text style={styles.distance}>
+            ({item.restaurant?.distance || ''})
           </Text>
+        </View>
+        <Text style={styles.productDescription} numberOfLines={2}>
+          {item.description}
+        </Text>
+
+        <View style={styles.productFooter}>
+          <View style={styles.priceContainer}>
+            <Text style={styles.currency}>₹</Text>
+            <Text style={styles.price}>{item.price}</Text>
+          </View>
+          <View style={styles.ratingContainer}>
+            <Text style={styles.rating}>
+              ★ {item.restaurant?.rating || 'N/A'}
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      <TouchableOpacity style={styles.addButton}>
+        <Text style={styles.addButtonText}>+</Text>
+      </TouchableOpacity>
+    </TouchableOpacity>
+  );
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={products}
+        renderItem={renderProductItem}
+        keyExtractor={item => item.id}
+        ListEmptyComponent={
+          !loading && (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyStateText}>
+                No delicious items found
+              </Text>
+              <Text style={styles.emptyStateSubtext}>
+                Try browsing other categories
+              </Text>
+            </View>
+          )
         }
-        contentContainerStyle={{ paddingBottom: 100, paddingTop: 10 }}
-        stickySectionHeadersEnabled={false}
+        contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
+        numColumns={1}
+        ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
       />
     </View>
   );
 };
+
+
 
 export default ProductTypeScreen;

@@ -14,6 +14,14 @@ export interface CartItem {
   quantity: number;
   size?: string;
   sweetness?: string;
+  milk?: string;
+  sugar?: string;
+  spices?: {
+    Ginger?: string;
+    Elaichi?: string;
+  };
+  strength?: string;
+  addons?: string[];
 }
 
 interface CartState {

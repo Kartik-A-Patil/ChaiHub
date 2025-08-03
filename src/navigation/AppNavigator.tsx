@@ -1,10 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { View, Animated, Easing, StyleSheet, Text } from 'react-native';
+import { FirebaseAuthTypes } from '@react-native-firebase/auth';
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fffbe6',
+  },
+  chaiCup: {
+    width: 120,
+    height: 120,
+    marginBottom: 24,
+  },
+  loadingText: {
+    fontSize: 18,
+    color: '#b8860b',
+    fontFamily: 'PlaywriteHU-VariableFont_wght',
+    marginTop: 20,
+  },
+});
+
+const images = [
+  require('../assets/tea.jpg'),
+  require('../assets/coffee.jpg'),
+  require('../assets/Masala_Chai.jpg'),
+  require('../assets/lemone_tea.jpeg'),
+];
+
+
 import { NavigationContainer } from '@react-navigation/native';
 import {
   createStackNavigator,
   TransitionPresets,
 } from '@react-navigation/stack';
 import LoginScreen from '../screens/LoginScreen';
+import auth from '@react-native-firebase/auth';
 import OrderScreen from '../screens/OrderScreen';
 import HomeTabs from './HomeTabs';
 import ProductScreen from '../screens/ProductScreen';
@@ -20,16 +52,29 @@ import OrderDetailScreen from '../screens/OrderDetailScreen';
 import ProductTypeScreen from '../screens/ProductTypeScreen';
 const Stack = createStackNavigator();
 
+
 const AppNavigator = () => {
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged((usr) => {
+      setUser(usr);
+      if (initializing) setInitializing(false);
+    });
+    return subscriber;
+  }, [initializing]);
+
+
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName={user ? 'Home' : 'Login'}
         screenOptions={{
           ...TransitionPresets.SlideFromRightIOS,
           gestureEnabled: true,
           headerStyle: {
-            backgroundColor: '#f7f7f7',
+            backgroundColor: '#ffffff',
             borderBottomWidth: 0,
             elevation: 0,
             shadowOpacity: 0,
@@ -41,6 +86,19 @@ const AppNavigator = () => {
           },
         }}
       >
+        {!user && (
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+        )}
+        {/* App screens */}
+        <Stack.Screen
+          name="Home"
+          component={HomeTabs}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="RecentOrders"
           component={RecentOrdersScreen}
@@ -52,19 +110,9 @@ const AppNavigator = () => {
           options={{ title: 'Order Details' }}
         />
         <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Home"
-          component={HomeTabs}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
           name="Product"
           component={ProductScreen}
-          options={{ title: 'Product' }}
+          
         />
         <Stack.Screen
           name="ProductType"
@@ -91,7 +139,6 @@ const AppNavigator = () => {
           component={OrderScreen}
           options={{ title: 'Order' }}
         />
-
         <Stack.Screen
           name="Profile"
           component={ProfileScreen}

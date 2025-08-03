@@ -7,22 +7,6 @@ export const homeScreenStyles = StyleSheet.create({
     backgroundColor: '#fff',
 
   },
-  searchBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F5F3F1',
-    borderRadius: 18,
-    paddingHorizontal: 16,
-    height: 48,
-    marginBottom: 20,
-    marginHorizontal: 20,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 18,
-    color: '#8B857B',
-    marginLeft: 8,
-  },
   sectionTitle: {
     fontSize: 22,
     fontWeight: '700',
@@ -90,47 +74,6 @@ export const homeScreenStyles = StyleSheet.create({
     height: 60,
     borderRadius: 10,
     resizeMode: 'cover',
-  },
-  quickMenuTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 12,
-    color: '#222',
-    marginHorizontal: 20,
-  },
-  quickMenuGrid: {
-    flexDirection: 'column',
-    gap: 0,
-    marginHorizontal: 20,
-  },
-  quickMenuRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-  quickMenuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 12,
-    borderColor: '#E0E0E0',
-    borderWidth: 1,
-    width: '48%', // 2 per row with margin
-    marginRight: 0,
-    marginLeft: 0,
-    backgroundColor: '#fff',
-    padding: 5,
-  },
-  quickMenuImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 10,
-    marginRight: 14,
-    resizeMode: 'cover',
-  },
-  quickMenuName: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#222',
   },
   skeletonItem: {
     backgroundColor: '#E0E0E0',

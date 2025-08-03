@@ -129,6 +129,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderColor: '#eee',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   checkoutBtn: {
     backgroundColor: '#000000ff',
@@ -169,6 +174,41 @@ const styles = StyleSheet.create({
   },
   navLabelActive: {
     color: '#161412',
+  },
+  emptyCartContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  emptyCartIcon: {
+    marginBottom: 16,
+  },
+  emptyCartText: {
+    fontSize: 18,
+    color: '#888',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  emptyCartSubText: {
+    fontSize: 15,
+    color: '#aaa',
+    textAlign: 'center',
+  },
+  totalContainer: {
+    flexDirection: 'column',
+  },
+  totalLabel: {
+    maxWidth: 80,
+  },
+  totalValue: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    maxWidth: 100,
+  },
+  orderButton: {
+    maxWidth: 180,
+    marginLeft: 16,
   },
 });
 

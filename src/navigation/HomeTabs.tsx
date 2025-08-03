@@ -1,24 +1,13 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import HomeScreen from '../screens/HomeScreen';
 import CartScreen from '../screens/CartScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import NearbyRestaurantsScreen from '../screens/NearbyRestaurantsScreen';
-import { Text } from 'react-native';
-import * as Animatable from 'react-native-animatable';
+import { HeaderRightBtn, TabBarIcon, TabBarLabel } from '../components/TabBarComponents';
 
 const Tab = createBottomTabNavigator();
-const HeaderRightBtn = ({ navigation }: { navigation: any }) => (
-  <SimpleLineIcons
-    name="settings"
-    size={26}
-    color="#222"
-    style={{ marginRight: 16 }}
-    onPress={() => navigation.navigate('Settings')}
-  />
-);
+
 const HeaderStyle = {
   backgroundColor: '#fff',
   borderBottomWidth: 0,
@@ -26,90 +15,75 @@ const HeaderStyle = {
   shadowOpacity: 0,
 };
 
+const screenOptions = ({ route }) => ({
+  tabBarActiveTintColor: '#222222',
+  tabBarInactiveTintColor: '#575757',
+  tabBarStyle: { backgroundColor: '#fff' },
+  tabBarLabelStyle: { fontSize: 13 },
+  tabBarIcon: ({ color, focused }) => (
+    <TabBarIcon route={route} color={color} focused={focused} />
+  ),
+  tabBarLabel: ({ focused, color }) => (
+    <TabBarLabel route={route} color={color} focused={focused} />
+  ),
+});
+
+const homeScreenOptions = ({ navigation }) => ({
+  headerRight: () => <HeaderRightBtn navigation={navigation} />, 
+  headerStyle: HeaderStyle,
+  headerTitleStyle: {
+    fontWeight: 'regular',
+    fontSize: 32,
+    fontFamily: 'PlaywriteHU-VariableFont_wght',
+    color: '#000000',
+    letterSpacing: 2,
+              },
+  headerTitle: 'ChaiHub',
+});
+
+const nearbyScreenOptions = ({ navigation }) => ({
+  headerRight: () => <HeaderRightBtn navigation={navigation} />, 
+  headerStyle: HeaderStyle,
+  headerTitleStyle: { fontWeight: 'regular', fontSize: 21, fontFamily: 'PlaywriteHU-VariableFont_wght' },
+});
+
+const cartScreenOptions = ({ navigation }) => ({
+  headerRight: () => <HeaderRightBtn navigation={navigation} />, 
+  headerStyle: HeaderStyle,
+  headerTitleStyle: { fontWeight: 'regular', fontSize: 21, fontFamily: 'PlaywriteHU-VariableFont_wght' },
+});
+
+const profileScreenOptions = ({ navigation }) => ({
+  headerRight: () => <HeaderRightBtn navigation={navigation} />, 
+  headerStyle: HeaderStyle,
+  headerTitleStyle: { fontWeight: 'regular', fontSize: 21, fontFamily: 'PlaywriteHU-VariableFont_wght' },
+});
+
 const HomeTabs = () => {
   return (
     <Tab.Navigator
       initialRouteName="HomeTab"
-      screenOptions={({ route }) => ({
-        tabBarActiveTintColor: '#222222',
-        tabBarInactiveTintColor: '#575757',
-        tabBarStyle: { backgroundColor: '#fff' },
-        tabBarLabelStyle: { fontSize: 13 },
-        tabBarIcon: ({ color, focused }) => {
-          let iconName = '';
-          if (route.name === 'Cart')
-            iconName = focused ? 'cart' : 'cart-outline';
-          else if (route.name === 'HomeTab')
-            iconName = focused ? 'home' : 'home-outline';
-          else if (route.name === 'Profile')
-            iconName = focused ? 'account' : 'account-outline';
-          if (route.name === 'Nearby')
-            iconName = focused ? 'map-marker' : 'map-marker-outline';
-          return (
-            <Animatable.View animation={focused ? 'pulse' : ''} iterationCount="infinite">
-              <MaterialCommunityIcons
-                name={iconName}
-                color={focused ? '#111' : color}
-                size={24}
-              />
-            </Animatable.View>
-          );
-        },
-        tabBarLabel: ({ focused, color }) => (
-          <Text
-            style={{
-              color: focused ? '#111' : color,
-              fontWeight: focused ? 'bold' : 'normal',
-              fontSize: 13,
-            }}
-          >
-            {route.name}
-          </Text>
-        ),
-      })}
+      screenOptions={screenOptions}
     >
       <Tab.Screen
         name="HomeTab"
         component={HomeScreen}
-        options={({ navigation }) => ({
-          headerRight: () => <HeaderRightBtn navigation={navigation} />, 
-          headerStyle: HeaderStyle,
-          headerTitleStyle: {
-            fontWeight: 'regular',
-            fontSize: 32,
-            fontFamily: 'PlaywriteHU-VariableFont_wght',
-            color: '#000000',
-            letterSpacing: 2,
-                      },
-          headerTitle: 'ChaiHub',
-        })}
+        options={homeScreenOptions}
       />
       <Tab.Screen
         name="Nearby"
         component={NearbyRestaurantsScreen}
-        options={({ navigation }) => ({
-          headerRight: () => <HeaderRightBtn navigation={navigation} />, 
-          headerStyle: HeaderStyle,
-          headerTitleStyle: { fontWeight: 'regular', fontSize: 21, fontFamily: 'PlaywriteHU-VariableFont_wght' },
-        })}
+        options={nearbyScreenOptions}
       />
       <Tab.Screen
         name="Cart"
         component={CartScreen}
-        options={({ navigation }) => ({
-          headerRight: () => <HeaderRightBtn navigation={navigation} />, 
-          headerStyle: HeaderStyle,
-          headerTitleStyle: { fontWeight: 'regular', fontSize: 21, fontFamily: 'PlaywriteHU-VariableFont_wght' },
-        })}
+        options={cartScreenOptions}
       />
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        options={({ navigation }) => ({
-          headerRight: () => <HeaderRightBtn navigation={navigation} />, 
-          headerStyle: HeaderStyle,
-          headerTitleStyle: { fontWeight: 'regular', fontSize: 21, fontFamily: 'PlaywriteHU-VariableFont_wght' },
-        })}
+        options={profileScreenOptions}
       />
     </Tab.Navigator>
   );

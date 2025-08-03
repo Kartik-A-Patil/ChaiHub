@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -7,56 +7,126 @@ import {
   TouchableOpacity,
   Pressable,
 } from 'react-native';
-import Resto from '../assets/Resto.webp';
-
 import NearbyRestaurantsStyles from '../styles/NearbyRestaurantsStyles';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useFirestore } from '../contexts/FirestoreContext';
+import imageMap from '../utils/imageMap';
 
 type RootStackParamList = {
   RestaurantMenu: { id: string };
 };
+
+type SortType = 'distance' | 'rating';
+type SortOrder = 'asc' | 'desc';
+
 const NearbyRestaurantsScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { restaurants } = useFirestore();
+  const [sortType, setSortType] = useState<SortType>('distance');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+
+  const sortedRestaurants = useMemo(() => {
+    return [...restaurants].sort((a, b) => {
+      if (sortType === 'distance') {
+        const distanceA = parseFloat(a.distance.split(' ')[0]);
+        const distanceB = parseFloat(b.distance.split(' ')[0]);
+        return sortOrder === 'asc' ? distanceA - distanceB : distanceB - distanceA;
+      } else {
+        return sortOrder === 'asc' ? a.rating - b.rating : b.rating - a.rating;
+      }
+    });
+  }, [restaurants, sortType, sortOrder]);
+
+  const handleSort = (type: SortType) => {
+    if (type === sortType) {
+      setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortType(type);
+      setSortOrder('asc');
+    }
+  };
+
   return (
     <View style={NearbyRestaurantsStyles.container}>
-      <View style={NearbyRestaurantsStyles.filterRow}>
-        <TouchableOpacity style={NearbyRestaurantsStyles.filterBtn}>
-          <Text style={NearbyRestaurantsStyles.filterBtnText}>Distance ▼</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={NearbyRestaurantsStyles.filterBtn}>
-          <Text style={NearbyRestaurantsStyles.filterBtnText}>Rating ▼</Text>
-        </TouchableOpacity>
+      {/* Modern sorting header */}
+      <View style={NearbyRestaurantsStyles.headerContainer}>
+        <View style={NearbyRestaurantsStyles.sortContainer}>
+          <TouchableOpacity 
+            style={[
+              NearbyRestaurantsStyles.sortButton, 
+              sortType === 'distance' && NearbyRestaurantsStyles.activeSortButton
+            ]}
+            onPress={() => handleSort('distance')}
+          >
+            <Text style={[
+              NearbyRestaurantsStyles.sortButtonText, 
+              sortType === 'distance' && NearbyRestaurantsStyles.activeSortButtonText
+            ]}>
+              Distance
+            </Text>
+            {sortType === 'distance' && (
+              <Text style={NearbyRestaurantsStyles.sortIcon}>
+                {sortOrder === 'asc' ? '↑' : '↓'}
+              </Text>
+            )}
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[
+              NearbyRestaurantsStyles.sortButton, 
+              sortType === 'rating' && NearbyRestaurantsStyles.activeSortButton
+            ]}
+            onPress={() => handleSort('rating')}
+          >
+            <Text style={[
+              NearbyRestaurantsStyles.sortButtonText, 
+              sortType === 'rating' && NearbyRestaurantsStyles.activeSortButtonText
+            ]}>
+              Rating
+            </Text>
+            {sortType === 'rating' && (
+              <Text style={NearbyRestaurantsStyles.sortIcon}>
+                {sortOrder === 'asc' ? '↑' : '↓'}
+              </Text>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
+
       <FlatList
-        data={restaurants}
+        data={sortedRestaurants}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={NearbyRestaurantsStyles.listContainer}
         renderItem={({ item }) => (
-          <Pressable
-            onPress={() =>
-              navigation.navigate('RestaurantMenu', { id: item.id })
-            }
+          <TouchableOpacity
+            style={NearbyRestaurantsStyles.restaurantCard}
+            onPress={() => navigation.navigate('RestaurantMenu', { id: item.id })}
+            activeOpacity={0.7}
           >
-            <View style={NearbyRestaurantsStyles.card}>
-              <Image
-                source={Resto}
-                style={NearbyRestaurantsStyles.image}
-                resizeMode="cover"
-              />
-              <View style={NearbyRestaurantsStyles.info}>
-                <Text style={NearbyRestaurantsStyles.name}>{item.name}</Text>
-                <Text style={NearbyRestaurantsStyles.details}>
-                  {item.distance} · ★ {item.rating} ({item.reviews}+)
-                </Text>
-                <Text style={NearbyRestaurantsStyles.openHours}>
-                  Open until {item.openUntil}
-                </Text>
+            <Image
+              source={imageMap[item.image]}
+              style={NearbyRestaurantsStyles.restaurantImage}
+              resizeMode="cover"
+            />
+            <View style={NearbyRestaurantsStyles.restaurantInfo}>
+              <Text style={NearbyRestaurantsStyles.restaurantName}>{item.name}</Text>
+              <View style={NearbyRestaurantsStyles.metaInfo}>
+                <View style={NearbyRestaurantsStyles.ratingContainer}>
+                  <Text style={NearbyRestaurantsStyles.ratingIcon}>★</Text>
+                  <Text style={NearbyRestaurantsStyles.ratingText}>{item.rating}</Text>
+                  <Text style={NearbyRestaurantsStyles.reviewText}>({item.reviews}+)</Text>
+                </View>
+                <View style={NearbyRestaurantsStyles.distanceContainer}>
+                  <Text style={NearbyRestaurantsStyles.distanceText}>{item.distance}</Text>
+                </View>
               </View>
+              <Text style={NearbyRestaurantsStyles.openHours}>
+                Open until {item.openUntil}
+              </Text>
             </View>
-          </Pressable>
+          </TouchableOpacity>
         )}
       />
     </View>

@@ -10,11 +10,10 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import type { AppDispatch } from '../store/store';
 import { selectCartItems, selectCartLoading } from '../store/cartSelectors';
 import {
-  addItem,
-  removeItem,
   updateQuantity,
   loadCart,
 } from '../store/cartSlice';
@@ -48,98 +47,93 @@ const CartScreen = () => {
     dispatch(updateQuantity({ id, quantity: newQuantity }));
   }; 
   return (
-    <SafeAreaView style={[styles.root, { paddingTop: 16 }]}>
-      <View style={{ flex: 1 }}>
+    <SafeAreaView style={styles.root}> 
+      <View style={styles.container}>
         {/* Cart Items Scrollable Section */}
-        <ScrollView
-          style={{ flex: 1 }}
-          contentContainerStyle={{ paddingBottom: 24 }}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={loading} onRefresh={onRefresh} />
-          }
-        >
-          {items.map(item => {
-            const product = products.find(p => p.id === item.id);
-            let imageSource = { uri: 'https://via.placeholder.com/60' };
-            if (product && product.image) {
-              if (typeof product.image === 'string' && imageMap[product.image]) {
-                imageSource = imageMap[product.image];
-              } else if (typeof product.image === 'object' && product.image.uri) {
-                imageSource = { uri: product.image.uri };
-              } else if (typeof product.image === 'string' && product.image.startsWith('http')) {
-                imageSource = { uri: product.image };
-              }
+        {items.length === 0 ? (
+          <View style={styles.emptyCartContainer}>
+            <Ionicons name="cart-outline" size={72} color="#bbb" style={styles.emptyCartIcon} />
+            <Text style={styles.emptyCartText}>
+              Your cart is empty!
+            </Text>
+            <Text style={styles.emptyCartSubText}>
+              Start adding some delicious items to your cart.
+            </Text>
+          </View>
+        ) : (
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollViewContent}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={loading} onRefresh={onRefresh} />
             }
-            return (
-              <View key={item.id} style={styles.cartItemRow}>
-                <View style={styles.cartItemLeft}>
-                  <Image
-                    source={imageSource}
-                    style={styles.cartItemImage}
-                  />
-                  <View
-                    style={
-                      styles.cartItemTextWrap || { justifyContent: 'center' }
-                    }
-                  >
-                    <Text style={styles.cartItemName}>{item.name}</Text>
-                    <Text style={styles.cartItemDesc}>{item.quantity} item</Text>
+          >
+            {items.map(item => {
+              const product = products.find(p => p.id === item.id);
+              let imageSource = { uri: 'https://via.placeholder.com/60' };
+              if (product && product.image) {
+                if (typeof product.image === 'string' && imageMap[product.image]) {
+                  imageSource = imageMap[product.image];
+                } else if (typeof product.image === 'object' && product.image.uri) {
+                  imageSource = { uri: product.image.uri };
+                } else if (typeof product.image === 'string' && product.image.startsWith('http')) {
+                  imageSource = { uri: product.image };
+                }
+              }
+              return (
+                <View key={item.id} style={styles.cartItemRow}>
+                  <View style={styles.cartItemLeft}>
+                    <Image
+                      source={imageSource}
+                      style={styles.cartItemImage}
+                    />
+                    <View
+                      style={styles.cartItemTextWrap}
+                    >
+                      <Text style={styles.cartItemName}>{item.name}</Text>
+                      <Text style={styles.cartItemDesc}>{item.quantity} item</Text>
+                    </View>
+                  </View>
+                  <View style={styles.cartItemRight}>
+                    <TouchableOpacity
+                      style={styles.qtyBtn}
+                      onPress={() => handleUpdateQuantity(item.id, -1)}
+                    >
+                      <Text style={styles.qtyBtnText}>-</Text>
+                    </TouchableOpacity>
+                    <TextInput
+                      style={styles.qtyInput}
+                      value={String(item.quantity)}
+                      keyboardType="number-pad"
+                      editable={false}
+                    />
+                    <TouchableOpacity
+                      style={styles.qtyBtn}
+                      onPress={() => handleUpdateQuantity(item.id, 1)}
+                    >
+                      <Text style={styles.qtyBtnText}>+</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
-                <View style={styles.cartItemRight}>
-                  <TouchableOpacity
-                    style={styles.qtyBtn}
-                    onPress={() => handleUpdateQuantity(item.id, -1)}
-                  >
-                    <Text style={styles.qtyBtnText}>-</Text>
-                  </TouchableOpacity>
-                  <TextInput
-                    style={styles.qtyInput}
-                    value={String(item.quantity)}
-                    keyboardType="number-pad"
-                    editable={false}
-                  />
-                  <TouchableOpacity
-                    style={styles.qtyBtn}
-                    onPress={() => handleUpdateQuantity(item.id, 1)}
-                  >
-                    <Text style={styles.qtyBtnText}>+</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            );
-          })}
-        </ScrollView>
+              );
+            })}
+          </ScrollView>
+        )}
 
         {/* Payment Section*/}
         <View
-          style={[
-            styles.checkoutContainer,
-            {
-              borderTopWidth: 1,
-              borderColor: '#eee',
-              backgroundColor: '#fff',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              paddingVertical: 16,
-            },
-          ]}
+          style={styles.checkoutContainer}
         >
-          <View style={{ flexDirection: 'column' }}>
+          <View style={styles.totalContainer}>
             <Text
-              style={[styles.paymentLabel, { maxWidth: 80 }]}
+              style={styles.totalLabel}
               numberOfLines={1}
             >
               Total
             </Text>
             <Text
-              style={[
-                styles.paymentValue,
-                { fontSize: 18, fontWeight: 'bold', maxWidth: 100 },
-              ]}
+              style={styles.totalValue}
               numberOfLines={1}
               ellipsizeMode="tail"
             >
@@ -147,7 +141,7 @@ const CartScreen = () => {
             </Text>
           </View>
           <TouchableOpacity
-            style={[styles.checkoutBtn, { maxWidth: 180, marginLeft: 16 }]}
+            style={styles.orderButton}
             onPress={() => navigation.navigate('Order')}
             disabled={items.length === 0}
           >

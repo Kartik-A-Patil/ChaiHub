@@ -4,12 +4,11 @@ import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import { Snackbar } from 'react-native-paper';
 import { useDispatch } from 'react-redux';
 import { addItemAsync } from '../store/cartSlice';
-import { Picker } from '@react-native-picker/picker';
 import { RouteProp, useRoute, useNavigation } from '@react-navigation/native';
 import RestaurantMenuStyles from '../styles/RestaurantMenuStyles';
 import { useFirestore } from '../contexts/FirestoreContext';
+import StickyFilterBar from '../components/StickyFilterBar';
 
-import Ionicons from 'react-native-vector-icons/Ionicons';
 // Type for route params
 interface MenuScreenRouteParams {
   id: string;
@@ -19,12 +18,6 @@ type MenuScreenRouteProp = RouteProp<
   { params: MenuScreenRouteParams },
   'params'
 >;
-
-const TABS = [
-  { key: 'tea', label: 'Chai' },
-  { key: 'coffee', label: 'Coffee' },
-  { key: 'snacks', label: 'Snacks' },
-];
 
 const RestaurantMenuScreen = () => {
   const route = useRoute<MenuScreenRouteProp>();
@@ -49,6 +42,21 @@ const RestaurantMenuScreen = () => {
     setSnackbarVisible(true);
   };
 
+  const bestSelling = useMemo(
+    () =>
+      products
+        .filter(p => p.restaurantId === id)
+        .sort((a, b) => b.price - a.price)
+        .slice(0, 3),
+    [id, products],
+  );
+
+  const menuItems = useMemo(() => {
+    return products.filter(
+      p => p.restaurantId === id && p.type === activeTab,
+    );
+  }, [id, activeTab, products]);
+
   if (!restaurant) {
     return (
       <View style={RestaurantMenuStyles.centered}>
@@ -56,24 +64,6 @@ const RestaurantMenuScreen = () => {
       </View>
     );
   }
-
-  // Best selling: top 3 products by price (mock logic)
-  const bestSelling = useMemo(
-    () =>
-      products
-        .filter(p => p.restaurantId === id)
-        .sort((a, b) => b.price - a.price)
-        .slice(0, 3),
-    [id],
-  );
-
-  // Menu items by tab
-  let menuItems = useMemo(() => {
-    let items = products.filter(
-      p => p.restaurantId === id && p.type === activeTab,
-    );
-    return items;
-  }, [id, activeTab]);
 
   // Header, image, best selling, menu title
   const listHeader = (
@@ -90,10 +80,7 @@ const RestaurantMenuScreen = () => {
       />
       {/* Best Selling */}
       <Text
-        style={[
-          RestaurantMenuStyles.menuTitle,
-          { fontSize: 18, marginLeft: 0, marginTop: 0 },
-        ]}
+        style={[RestaurantMenuStyles.menuTitle, RestaurantMenuStyles.bestSellingTitle]}
       >
         Best Selling
       </Text>
@@ -102,20 +89,14 @@ const RestaurantMenuScreen = () => {
         keyExtractor={item => item.id}
         horizontal
         showsHorizontalScrollIndicator={false}
-        style={{ marginVertical: 8, marginLeft: 0 }}
+        style={RestaurantMenuStyles.bestSellingList}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => navigation.navigate('Product', { id: item.id })}
             activeOpacity={0.8}
           >
             <View
-              style={{
-                width: 140,
-                marginRight: 12,
-                backgroundColor: '#f8f8f8',
-                borderRadius: 12,
-                padding: 8,
-              }}
+              style={RestaurantMenuStyles.bestSellingItem}
             >
               <Image
                 source={
@@ -123,13 +104,13 @@ const RestaurantMenuScreen = () => {
                     ? imageMap[item.image]
                     : item.image
                 }
-                style={{ width: '100%', height: 70, borderRadius: 8 }}
+                style={RestaurantMenuStyles.bestSellingImage}
               />
 
-              <Text style={{ fontWeight: 'bold', fontSize: 15, marginTop: 4 }}>
+              <Text style={RestaurantMenuStyles.bestSellingName}>
                 {item.name}
               </Text>
-              <Text style={{ color: '#888', fontSize: 12 }}>
+              <Text style={RestaurantMenuStyles.bestSellingDescription}>
                 {item.description}
               </Text>
             </View>
@@ -139,45 +120,6 @@ const RestaurantMenuScreen = () => {
       {/* Menu section title */}
       <Text style={RestaurantMenuStyles.menuTitle}>Menu</Text>
     </>
-  );
-
-  // Sticky filter/tabs bar as a separate component for FlatList stickyHeaderIndices
-  const StickyFilterBar = () => (
-    <View
-      style={{
-        backgroundColor: '#fff',
-        paddingHorizontal: 0,
-        paddingTop: 4,
-        paddingBottom: 8,
-        zIndex: 10,
-      }}
-    >
-      {/* Tabs */}
-      <View style={{ flexDirection: 'row' }}>
-        {TABS.map(tab => (
-          <TouchableOpacity
-            key={tab.key}
-            style={{
-              borderBottomWidth: activeTab === tab.key ? 2 : 0,
-              borderBottomColor: '#222',
-              marginRight: 18,
-              paddingBottom: 4,
-            }}
-            onPress={() => setActiveTab(tab.key)}
-          >
-            <Text
-              style={{
-                color: activeTab === tab.key ? '#222' : '#888',
-                fontWeight: activeTab === tab.key ? 'bold' : 'normal',
-                fontSize: 15,
-              }}
-            >
-              {tab.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
   );
 
   // FlatList data: add a dummy item at index 0 for sticky filter bar, type safe
@@ -196,9 +138,9 @@ const RestaurantMenuScreen = () => {
         contentContainerStyle={{ paddingBottom: 24 }}
         ListHeaderComponent={listHeader}
         stickyHeaderIndices={[1]}
-        renderItem={({ item, index }) => {
+        renderItem={({ item }) => {
           if ('type' in item && item.type === 'sticky') {
-            return <StickyFilterBar />;
+            return <StickyFilterBar activeTab={activeTab} setActiveTab={setActiveTab} />;
           }
           // Product type guard
           const product = item as (typeof products)[number];
@@ -229,17 +171,11 @@ const RestaurantMenuScreen = () => {
                   </Text>
                 </View>
                 <TouchableOpacity
-                  style={{
-                    backgroundColor: '#222',
-                    borderRadius: 16,
-                    paddingHorizontal: 14,
-                    paddingVertical: 7,
-                    alignSelf: 'center',
-                  }}
+                  style={RestaurantMenuStyles.addToCartButton}
                   onPress={() => handleAddToCart(product)}
                 >
                   <Text
-                    style={{ color: '#fff', fontWeight: 'bold', fontSize: 13 }}
+                    style={RestaurantMenuStyles.addToCartButtonText}
                   >
                     Add to Cart
                   </Text>
@@ -249,7 +185,7 @@ const RestaurantMenuScreen = () => {
           );
         }}
         ListEmptyComponent={
-          <Text style={{ color: '#888', textAlign: 'center', marginTop: 24 }}>
+          <Text style={RestaurantMenuStyles.emptyList}>
             No items found.
           </Text>
         }
@@ -264,9 +200,7 @@ const RestaurantMenuScreen = () => {
             navigation.navigate('Cart');
           },
         }}
-        style={{
-          backgroundColor: '#222',
-        }}
+        style={RestaurantMenuStyles.snackbar}
         textColor={'#fff'}
         >
         Item added to cart!

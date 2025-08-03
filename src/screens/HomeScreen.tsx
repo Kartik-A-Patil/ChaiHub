@@ -1,4 +1,6 @@
 import React, { useCallback, useState } from 'react';
+import MaskedView from '@react-native-masked-view/masked-view';
+import LinearGradient from 'react-native-linear-gradient';
 import {
   View,
   Text,
@@ -15,6 +17,7 @@ import { homeScreenStyles as styles } from '../styles/HomeScreenStyles';
 import { useFirestore } from '../contexts/FirestoreContext';
 import { quickMenu } from '../data/data';
 import imageMap from '../utils/imageMap';
+const Showcase = require('../assets/showcase.png');
 type RootStackParamList = {
   Login: undefined;
   Home: undefined;
@@ -115,17 +118,202 @@ const HomeScreen = () => {
       }
       contentContainerStyle={{ paddingBottom: 80 }}
     >
-      <TouchableOpacity
-        style={styles.searchBox}
-        onPress={() => navigation.navigate('Search')}
-        activeOpacity={0.8}
+      {/* Custom Header - Improved to match reference */}
+      <View
+        style={{
+          marginTop: 18,
+          marginBottom: 18,
+          position: 'relative',
+          minHeight: 260,
+          flexDirection: 'row',
+          alignItems: 'flex-start',
+        }}
       >
-        <MaterialCommunityIcons name="magnify" size={24} color="#8B857B" />
-        <Text style={styles.searchInput}>
-          Search for tea, coffee, or snacks
-        </Text>
-      </TouchableOpacity>
-      <Text style={styles.sectionTitle}>Featured</Text>
+        {/* Right content */}
+        <View style={{ flex: 1 }}>
+          {/* Decorative icons spread across the header */}
+          <MaterialCommunityIcons
+            name="cup"
+            size={28}
+            color="#ffb7003d"
+            style={{ position: 'absolute', left: 30, top: 18, zIndex: 1 }}
+          />
+          <MaterialCommunityIcons
+            name="food"
+            size={28}
+            color="#ff440041"
+            style={{ position: 'absolute', right: 28, top: 38, zIndex: 1 }}
+          />
+          <MaterialCommunityIcons
+            name="leaf"
+            size={34}
+            color="#c7c7c7ff"
+            style={{ position: 'absolute', left: 105, top: 340, zIndex: 0 }}
+          />
+          <MaterialCommunityIcons
+            name="star"
+            size={31}
+            color="#c7c7c773"
+            style={{
+              position: 'absolute',
+              left:120,
+              top: 160,
+              zIndex: 1,
+              opacity: 0.4,
+            }}
+          />
+          <MaterialCommunityIcons
+            name="cookie"
+            size={24}
+            color="#c7c7c773"
+            style={{ position: 'absolute', left: 20, bottom: 30, zIndex: 1 }}
+          />
+          <MaterialCommunityIcons
+            name="water"
+            size={32}
+            color="#c7c7c773"
+            style={{ position: 'absolute', right: 20, bottom: 100, zIndex: 1 }}
+          />
+
+          {/* Centered circular image */}
+          <View
+            style={{ alignItems: 'center', marginTop: 10, marginBottom: 10 }}
+          >
+            <View
+              style={{
+                width: 160,
+                height: 170,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <Image source={Showcase} style={{ width: 160, height: 240 }} />
+            </View>
+          </View>
+          {/* Special dish text, right-aligned to the image */}
+          <View
+            style={{
+              alignItems: 'flex-start',
+
+              marginLeft: 30,
+              paddingHorizontal: 30,
+            }}
+          >
+            <View>
+              <Text
+                style={{
+                  fontSize: 35,
+                  fontWeight: '600',
+                  color: '#222',
+                  textAlign: 'left',
+                }}
+              >
+                <Text>A </Text>
+                <MaskedView
+                  maskElement={
+                    <Text
+                      style={{
+                        fontSize: 32,
+                        fontWeight: 'bold',
+                        color: 'black',
+                      }}
+                    >
+                      special dish
+                    </Text>
+                  }
+                >
+                  <LinearGradient
+                    colors={['#ff7b00ff', '#ffc355ff']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={{ height: 40 }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 32,
+                        fontWeight: 'bold',
+                        opacity: 0,
+                      }}
+                    >
+                      special dish
+                    </Text>
+                  </LinearGradient>
+                </MaskedView>
+                <Text style={{ color: '#222' }}> prepared for you</Text>
+              </Text>
+              <Text
+                style={{
+                  color: '#8B857B',
+                  fontSize: 15,
+                  marginTop: 6,
+                  textAlign: 'left',
+                  maxWidth: 280,
+                }}
+              >
+                Our food delivery app brings your favourite dishes to you.
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      {/* Quick Menu - Circular Style */}
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginHorizontal: 20,
+          marginBottom: 24,
+          marginTop: 10,
+        }}
+      >
+        {quickMenu.map((item, idx) => (
+          <TouchableOpacity
+            key={item.type}
+            style={{ alignItems: 'center', flex: 1 }}
+            onPress={() =>
+              navigation.navigate('ProductType', { type: item.type })
+            }
+          >
+            <View
+              style={{
+                width: 80,
+                height: 80,
+                borderRadius: 40,
+                backgroundColor: idx === 0 ? '#f5c242' : '#f5f3f1',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: 8,
+                borderWidth: idx === 0 ? 2 : 0,
+                borderColor: idx === 0 ? '#f5c242' : 'transparent',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 4,
+                elevation: 2,
+              }}
+            >
+              <Image
+                source={item.image}
+                style={{ width: 75, height: 75, borderRadius: 50 }}
+              />
+            </View>
+            <Text
+              style={{
+                fontSize: 14,
+                color: '#222',
+                fontWeight: idx === 0 ? 'bold' : '500',
+              }}
+            >
+              {item.name}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* Featured Section */}
+      <Text style={styles.sectionTitle}>Popular Foods</Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -159,6 +347,7 @@ const HomeScreen = () => {
             ))}
       </ScrollView>
 
+      {/* Special Offers Section */}
       <Text style={styles.sectionTitle}>Special Offers</Text>
       {loading && !refreshing
         ? Array.from({ length: 2 }).map((_, i) => (
@@ -175,52 +364,6 @@ const HomeScreen = () => {
               <Image source={offer.image} style={styles.offerImage} />
             </View>
           ))}
-
-      <Text style={styles.quickMenuTitle}>Quick Menu</Text>
-      <View style={styles.quickMenuGrid}>
-        {loading && !refreshing
-          ? Array.from({ length: Math.ceil(quickMenu.length / 2) }).map(
-              (_, rowIdx) => (
-                <View style={styles.quickMenuRow} key={rowIdx}>
-                  {Array.from({ length: 2 }).map((_, i) => (
-                    <View style={styles.quickMenuItem} key={i}>
-                      <QuickMenuLoader />
-                    </View>
-                  ))}
-                </View>
-              ),
-            )
-          : Array.from({ length: Math.ceil(quickMenu.length / 2) }).map(
-              (_, rowIdx) => {
-                const firstIdx = rowIdx * 2;
-                const rowItems = quickMenu.slice(firstIdx, firstIdx + 2);
-                return (
-                  <View style={styles.quickMenuRow} key={rowIdx}>
-                    {rowItems.map(item => (
-                      <TouchableOpacity
-                        style={styles.quickMenuItem}
-                        key={item.type}
-                        onPress={() =>
-                          navigation.navigate('ProductType', {
-                            type: item.type,
-                          })
-                        }
-                      >
-                        <Image
-                          source={item.image}
-                          style={styles.quickMenuImage}
-                        />
-                        <Text style={styles.quickMenuName}>{item.name}</Text>
-                      </TouchableOpacity>
-                    ))}
-                    {rowItems.length === 1 && (
-                      <View style={[styles.quickMenuItem, { opacity: 0 }]} />
-                    )}
-                  </View>
-                );
-              },
-            )}
-      </View>
     </ScrollView>
   );
 };
