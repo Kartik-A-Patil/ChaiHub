@@ -21,6 +21,7 @@ import styles from '../styles/CartScreenStyles';
 import imageMap from '../utils/imageMap';
 import { useFirestore } from '../contexts/FirestoreContext';
 import { useNavigation } from '@react-navigation/native';
+import { hapticActions } from '../utils/hapticUtils';
 const CartScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
@@ -37,6 +38,7 @@ const CartScreen = () => {
   }, [dispatch]);
 
   const onRefresh = () => {
+    hapticActions.refresh();
     dispatch(loadCart());
   };
 
@@ -44,6 +46,16 @@ const CartScreen = () => {
     const item = items.find(i => i.id === id);
     if (!item) return;
     const newQuantity = Math.max(1, item.quantity + delta);
+    
+    // Add haptic feedback for quantity changes
+    if (delta > 0) {
+      hapticActions.quantityChange();
+    } else if (delta < 0 && newQuantity === 1) {
+      hapticActions.removeFromCart();
+    } else {
+      hapticActions.quantityChange();
+    }
+    
     dispatch(updateQuantity({ id, quantity: newQuantity }));
   }; 
   return (
@@ -62,8 +74,7 @@ const CartScreen = () => {
           </View>
         ) : (
           <ScrollView
-            style={styles.scrollView}
-            contentContainerStyle={styles.scrollViewContent}
+            
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl refreshing={loading} onRefresh={onRefresh} />
@@ -142,7 +153,10 @@ const CartScreen = () => {
           </View>
           <TouchableOpacity
             style={styles.orderButton}
-            onPress={() => navigation.navigate('Order')}
+            onPress={() => {
+              hapticActions.navigate();
+              (navigation as any).navigate('Order');
+            }}
             disabled={items.length === 0}
           >
             <Text style={styles.checkoutBtnText}>Order</Text>

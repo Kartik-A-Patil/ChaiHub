@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useFirestore } from '../contexts/FirestoreContext';
 import imageMap from '../utils/imageMap';
+import { hapticActions } from '../utils/hapticUtils';
 
 type RootStackParamList = {
   RestaurantMenu: { id: string };
@@ -39,6 +40,7 @@ const NearbyRestaurantsScreen = () => {
   }, [restaurants, sortType, sortOrder]);
 
   const handleSort = (type: SortType) => {
+    hapticActions.filterChange();
     if (type === sortType) {
       setSortOrder(prev => (prev === 'asc' ? 'desc' : 'asc'));
     } else {
@@ -102,7 +104,10 @@ const NearbyRestaurantsScreen = () => {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={NearbyRestaurantsStyles.restaurantCard}
-            onPress={() => navigation.navigate('RestaurantMenu', { id: item.id })}
+            onPress={() => {
+              hapticActions.navigate();
+              navigation.navigate('RestaurantMenu', { id: item.id });
+            }}
             activeOpacity={0.7}
           >
             <Image

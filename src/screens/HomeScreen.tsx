@@ -12,11 +12,14 @@ import { ScrollView } from 'react-native-gesture-handler';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ContentLoader, { Rect } from 'react-content-loader/native';
 import { useNavigation } from '@react-navigation/native';
-import type { StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from '@react-navigation/stack';
+import * as Animatable from 'react-native-animatable';
+
 import { homeScreenStyles as styles } from '../styles/HomeScreenStyles';
 import { useFirestore } from '../contexts/FirestoreContext';
 import { quickMenu } from '../data/data';
 import imageMap from '../utils/imageMap';
+import { hapticActions } from '../utils/hapticUtils';
 const Showcase = require('../assets/showcase.png');
 type RootStackParamList = {
   Login: undefined;
@@ -55,19 +58,7 @@ const OfferLoader = () => (
   </ContentLoader>
 );
 
-const QuickMenuLoader = () => (
-  <ContentLoader
-    speed={1.5}
-    width={180}
-    height={70}
-    viewBox="0 0 180 70"
-    backgroundColor="#f3f3f3"
-    foregroundColor="#ecebeb"
-  >
-    <Rect x="0" y="5" rx="10" ry="10" width="60" height="60" />
-    <Rect x="70" y="25" rx="5" ry="5" width="100" height="20" />
-  </ContentLoader>
-);
+
 
 const HomeScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -119,7 +110,9 @@ const HomeScreen = () => {
       contentContainerStyle={{ paddingBottom: 80 }}
     >
       {/* Custom Header - Improved to match reference */}
-      <View
+      <Animatable.View
+        animation="fadeInDown"
+        duration={1000}
         style={{
           marginTop: 18,
           marginBottom: 18,
@@ -132,51 +125,65 @@ const HomeScreen = () => {
         {/* Right content */}
         <View style={{ flex: 1 }}>
           {/* Decorative icons spread across the header */}
-          <MaterialCommunityIcons
-            name="cup"
-            size={28}
-            color="#ffb7003d"
-            style={{ position: 'absolute', left: 30, top: 18, zIndex: 1 }}
-          />
-          <MaterialCommunityIcons
-            name="food"
-            size={28}
-            color="#ff440041"
-            style={{ position: 'absolute', right: 28, top: 38, zIndex: 1 }}
-          />
-          <MaterialCommunityIcons
-            name="leaf"
-            size={34}
-            color="#c7c7c7ff"
-            style={{ position: 'absolute', left: 105, top: 340, zIndex: 0 }}
-          />
-          <MaterialCommunityIcons
-            name="star"
-            size={31}
-            color="#c7c7c773"
-            style={{
-              position: 'absolute',
-              left:120,
-              top: 160,
-              zIndex: 1,
-              opacity: 0.4,
-            }}
-          />
-          <MaterialCommunityIcons
-            name="cookie"
-            size={24}
-            color="#c7c7c773"
-            style={{ position: 'absolute', left: 20, bottom: 30, zIndex: 1 }}
-          />
-          <MaterialCommunityIcons
-            name="water"
-            size={32}
-            color="#c7c7c773"
-            style={{ position: 'absolute', right: 20, bottom: 100, zIndex: 1 }}
-          />
+          <Animatable.View animation="bounceInDown" delay={500}>
+            <MaterialCommunityIcons
+              name="cup"
+              size={28}
+              color="#ffb7003d"
+              style={{ position: 'absolute', left: 30, top: 18, zIndex: 1 }}
+            />
+          </Animatable.View>
+          <Animatable.View animation="bounceInDown" delay={700}>
+            <MaterialCommunityIcons
+              name="food"
+              size={28}
+              color="#ff440041"
+              style={{ position: 'absolute', right: 28, top: 38, zIndex: 1 }}
+            />
+          </Animatable.View>
+          <Animatable.View animation="bounceInUp" delay={900}>
+            <MaterialCommunityIcons
+              name="leaf"
+              size={34}
+              color="#c7c7c7ff"
+              style={{ position: 'absolute', left: 105, top: 340, zIndex: 0 }}
+            />
+          </Animatable.View>
+          <Animatable.View animation="bounceIn" delay={1100}>
+            <MaterialCommunityIcons
+              name="star"
+              size={31}
+              color="#c7c7c773"
+              style={{
+                position: 'absolute',
+                left: 120,
+                top: 160,
+                zIndex: 1,
+                opacity: 0.4,
+              }}
+            />
+          </Animatable.View>
+          <Animatable.View animation="bounceInLeft" delay={1300}>
+            <MaterialCommunityIcons
+              name="cookie"
+              size={24}
+              color="#c7c7c773"
+              style={{ position: 'absolute', left: 20, bottom: 30, zIndex: 1 }}
+            />
+          </Animatable.View>
+          <Animatable.View animation="bounceInRight" delay={1500}>
+            <MaterialCommunityIcons
+              name="water"
+              size={32}
+              color="#c7c7c773"
+              style={{ position: 'absolute', right: 20, bottom: 100, zIndex: 1 }}
+            />
+          </Animatable.View>
 
           {/* Centered circular image */}
-          <View
+          <Animatable.View
+            animation="fadeInUp"
+            delay={200}
             style={{ alignItems: 'center', marginTop: 10, marginBottom: 10 }}
           >
             <View
@@ -189,9 +196,11 @@ const HomeScreen = () => {
             >
               <Image source={Showcase} style={{ width: 160, height: 240 }} />
             </View>
-          </View>
+          </Animatable.View>
           {/* Special dish text, right-aligned to the image */}
-          <View
+          <Animatable.View
+            animation="fadeInUp"
+            delay={400}
             style={{
               alignItems: 'flex-start',
 
@@ -253,9 +262,9 @@ const HomeScreen = () => {
                 Our food delivery app brings your favourite dishes to you.
               </Text>
             </View>
-          </View>
+          </Animatable.View>
         </View>
-      </View>
+      </Animatable.View>
 
       {/* Quick Menu - Circular Style */}
       <View
@@ -272,9 +281,9 @@ const HomeScreen = () => {
           <TouchableOpacity
             key={item.type}
             style={{ alignItems: 'center', flex: 1 }}
-            onPress={() =>
-              navigation.navigate('ProductType', { type: item.type })
-            }
+            onPress={() => {
+              navigation.navigate('ProductType', { type: item.type });
+            }}
           >
             <View
               style={{
@@ -330,7 +339,9 @@ const HomeScreen = () => {
               <TouchableOpacity
                 style={styles.featuredItemContainer}
                 key={item.id}
-                onPress={() => navigation.navigate('Product', { id: item.id })}
+                onPress={() => {
+                  navigation.navigate('Product', { id: item.id });
+                }}
               >
                 <View style={styles.featuredItem}>
                   <Image

@@ -9,6 +9,7 @@ import {
   Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { hapticActions } from '../utils/hapticUtils';
 
 if (
   Platform.OS === 'android' &&
@@ -39,7 +40,10 @@ interface CustomizationAccordionProps {
 const CustomizationAccordion: React.FC<CustomizationAccordionProps> = ({ title, selectedValue, children, isOpen, onToggle }) => {
   return (
     <View style={styles.accordionContainer}>
-      <TouchableOpacity style={styles.accordionHeader} onPress={onToggle}>
+      <TouchableOpacity style={styles.accordionHeader} onPress={() => {
+        hapticActions.toggle();
+        onToggle();
+      }}>
         <Text style={styles.accordionTitle}>{title}</Text>
         <View style={styles.headerRight}>
           <Text style={styles.selectedValue}>{selectedValue}</Text>
@@ -105,11 +109,10 @@ const ProductScreenCustomization: React.FC<Props> = ({
   }, []);
 
   const handleSelection = (setter: Function, value: any) => {
+    hapticActions.selection();
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setter(value);
-  };
-
-  const handleSpiceSelection = (spice: string) => {
+  };  const handleSpiceSelection = (spice: string) => {
     const newSpices = { ...selectedSpices };
     if (newSpices[spice] === 'Regular') {
       newSpices[spice] = 'None';

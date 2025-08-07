@@ -209,6 +209,10 @@ const styles = StyleSheet.create({
   orderButton: {
     maxWidth: 180,
     marginLeft: 16,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
   },
 });
 

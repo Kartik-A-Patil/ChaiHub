@@ -5,13 +5,17 @@ import { globalStyles } from '../styles/globalStyles';
 import ProfileScreenStyles from '../styles/ProfileScreenStyles';
 import { profileData } from '../data/data';
 import ProfileImage from '../assets/Profile.png';
+import { hapticActions } from '../utils/hapticUtils';
 const ProfileScreen = ({ navigation }: any) => {
   const { name, avatar, rating, ratingsCount, joined, menu } = profileData;
 
   const renderMenuItem = ({ item }: any) => (
     <TouchableOpacity
       style={ProfileScreenStyles.menuItem}
-      onPress={() => navigation.navigate(item.route)}
+      onPress={() => {
+        hapticActions.navigate();
+        navigation.navigate(item.route);
+      }}
     >
       <Icon name={item.icon} size={24} style={ProfileScreenStyles.menuIcon} />
       <Text style={ProfileScreenStyles.menuText}>{item.label}</Text>
@@ -28,7 +32,7 @@ const ProfileScreen = ({ navigation }: any) => {
       {/* Header */}
       <View style={ProfileScreenStyles.header}>
         <View style={ProfileScreenStyles.avatarWrapper}>
-          <Image source={ProfileImage} style={ProfileScreenStyles.avatar} />
+          <Image source={require('../assets/Profile.png')} style={ProfileScreenStyles.avatar} />
         </View>
         <Text style={ProfileScreenStyles.name}>{name}</Text>
         <Text style={ProfileScreenStyles.subtitle}>

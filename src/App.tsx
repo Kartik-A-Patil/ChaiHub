@@ -10,20 +10,38 @@ import { Provider } from 'react-redux';
 import { PaperProvider } from 'react-native-paper';
 import AppNavigator from './navigation/AppNavigator';
 import { FirestoreProvider } from './contexts/FirestoreContext';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import 'react-native-gesture-handler';
 import { store } from './store/store';
+import React from 'react';
+
+const AppContent = () => {
+  const { isDarkMode } = useTheme();
+  
+  return (
+    <>
+      <StatusBar 
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'} 
+        backgroundColor="transparent" 
+        translucent 
+      />
+      <AppNavigator />
+    </>
+  );
+};
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
     <Provider store={store}>
-      <FirestoreProvider>
-        <PaperProvider>
-          <StatusBar barStyle={'dark-content'} backgroundColor="transparent" translucent />
-          <AppNavigator />
-        </PaperProvider>
-      </FirestoreProvider>
+      <ThemeProvider>
+        <FirestoreProvider>
+          <PaperProvider>
+            <AppContent />
+          </PaperProvider>
+        </FirestoreProvider>
+      </ThemeProvider>
     </Provider>
   );
 }

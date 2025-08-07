@@ -1,49 +1,96 @@
 import { StyleSheet } from 'react-native';
 
 const RestaurantMenuStyles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', padding: 16 },
+  container: { flex: 1, backgroundColor: '#f8f9fa' },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  image: { width: '100%', height: 180, borderRadius: 12, marginBottom: 12 },
-  
-  title: { fontSize: 28, fontWeight: 'bold', marginBottom: 4 },
-  address: { fontSize: 16, color: '#666', marginBottom: 2 },
-  details: { fontSize: 14, color: '#888', marginBottom: 2 },
-  openHours: { fontSize: 14, color: '#4caf50', marginBottom: 10 },
-  menuTitle: { fontSize: 22, fontWeight: 'bold', marginVertical: 10 },
+
+  // Header
+  headerImage: { width: '100%', height: 220 },
+  headerDetailsContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 36,
+    padding: 20,
+    marginTop: -30, // Overlap the image    
+    marginBottom: 16,
+  },
+  title: { fontSize: 28, fontWeight: 'bold', color: '#212529', marginBottom: 8 },
+  address: { fontSize: 15, color: '#6c757d', marginBottom: 4 },
+  details: { fontSize: 14, color: '#6c757d', marginBottom: 8 },
+  openHours: { fontSize: 14, color: '#28a745', fontWeight: 'bold' },
+
+  // Section Title
+  menuTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginVertical: 12,
+    marginHorizontal: 20,
+    color: '#343a40',
+  },
+
+  // Best Selling
+  bestSellingList: { paddingLeft: 20, paddingVertical: 10 },
+  bestSellingItem: {
+    width: 210,
+    marginRight: 16,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+    height: 220,
+  },
+  bestSellingImage: { width: '100%', height: 120 },
+  bestSellingInfo: { padding: 12 },
+  bestSellingName: { fontWeight: 'bold', fontSize: 16, color: '#212529' },
+  bestSellingDescription: { color: '#6c757d', fontSize: 12, marginTop: 4 },
+
+  // Menu Item
   menuItem: {
     flexDirection: 'row',
-    marginBottom: 16,
-    backgroundColor: '#f8f8f8',
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  menuImage: { width: 80, height: 80, borderRadius: 8 },
-  menuInfo: { flex: 1, padding: 10, justifyContent: 'center' },
-  menuName: { fontSize: 18, fontWeight: 'bold' },
-  menuDesc: { fontSize: 14, color: '#666', marginVertical: 2 },
-  menuPrice: { fontSize: 16, color: '#333', fontWeight: 'bold' },
-  bestSellingTitle: { fontSize: 18, marginLeft: 0, marginTop: 0 },
-  bestSellingList: { marginVertical: 8, marginLeft: 0 },
-  bestSellingItem: {
-    width: 140,
-    marginRight: 12,
-    backgroundColor: '#f8f8f8',
-    borderRadius: 12,
-    padding: 8,
-  },
-  bestSellingImage: { width: '100%', height: 70, borderRadius: 8 },
-  bestSellingName: { fontWeight: 'bold', fontSize: 15, marginTop: 4 },
-  bestSellingDescription: { color: '#888', fontSize: 12 },
-  addToCartButton: {
-    backgroundColor: '#222',
+    backgroundColor: '#fff',
     borderRadius: 16,
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    alignSelf: 'center',
+    marginVertical: 8,
+    marginHorizontal: 20,
+    padding: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 3,
   },
-  addToCartButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 13 },
-  emptyList: { color: '#888', textAlign: 'center', marginTop: 24 },
-  snackbar: { backgroundColor: '#222' },
+  menuImage: { width: 90, height: 90, borderRadius: 12 },
+  menuInfo: {
+    flex: 1,
+    marginLeft: 12,
+    justifyContent: 'space-between',
+  },
+  menuName: { fontSize: 18, fontWeight: 'bold', color: '#212529' },
+  menuDesc: { fontSize: 14, color: '#6c757d', marginVertical: 4, flexShrink: 1 },
+  menuBottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  menuPrice: { fontSize: 18, color: '#212529', fontWeight: 'bold' },
+
+  // Add to Cart Button
+  addToCartButton: {
+    backgroundColor: '#f5c242',
+    borderRadius: 24,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addToCartButtonText: { color: '#212529', fontWeight: 'bold', fontSize: 14 },
+
+  // Empty & Snackbar
+  emptyList: { color: '#6c757d', textAlign: 'center', marginTop: 100 },
+  snackbar: { backgroundColor: '#212529' },
 });
 
 export default RestaurantMenuStyles;

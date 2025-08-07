@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectCartItems, selectCartTotal } from '../store/cartSelectors';
 import { clearCartAsync } from '../store/cartSlice';
 import type { AppDispatch } from '../store/store';
+import { hapticActions } from '../utils/hapticUtils';
 
 const OrderScreen = () => {
   const [address, setAddress] = useState('');
@@ -35,15 +36,18 @@ const OrderScreen = () => {
 
   const handleProceedToPayment = () => {
     if (!address || !phone) {
+      hapticActions.warning();
       setSnackbarMsg('Please fill in all fields.');
       setSnackbarType('error');
       setSnackbarVisible(true);
       return;
     }
+    hapticActions.navigate();
     setModalVisible(true);
   };
 
   const handlePayment = () => {
+    hapticActions.medium();
     setLoading(true);
     setTimeout(() => {
       createOrder();
@@ -80,13 +84,15 @@ const OrderScreen = () => {
       dispatch(clearCartAsync());
       setLoading(false);
       setModalVisible(false);
+      hapticActions.orderSuccess();
       setSnackbarMsg('Your order has been placed successfully!');
       setSnackbarType('success');
       setSnackbarVisible(true);
       setTimeout(() => {
-        navigation.navigate('RecentOrders');
+        (navigation as any).navigate('RecentOrders');
       }, 1500);
     } catch (error) {
+      hapticActions.orderFailure();
       const errMsg = error instanceof Error ? error.message : 'Unknown error';
       setSnackbarMsg(errMsg);
       setSnackbarType('error');

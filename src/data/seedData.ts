@@ -8,7 +8,6 @@ import Pastry from '../assets/pastry.jpg';
 import Potato from '../assets/Potato.jpeg';
 import Roll from '../assets/roll.jpeg';
 import Tea from '../assets/tea.jpg';
-import Resto from '../assets/Resto.webp';
 export const products = [
   {
     restaurantId: 'r1',

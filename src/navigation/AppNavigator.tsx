@@ -50,6 +50,7 @@ import SeedingScreen from '../screens/SeedingScreen';
 import RecentOrdersScreen from '../screens/RecentOrdersScreen';
 import OrderDetailScreen from '../screens/OrderDetailScreen';
 import ProductTypeScreen from '../screens/ProductTypeScreen';
+import NotificationSettingsScreen from '../screens/NotificationSettingsScreen';
 const Stack = createStackNavigator();
 
 
@@ -158,6 +159,12 @@ const AppNavigator = () => {
           name="Seeding"
           component={SeedingScreen}
           options={{ title: 'Seeding' }}
+        />
+        <Stack.Screen
+          name="NotificationSettings"
+          component={NotificationSettingsScreen}
+          options={{ title: 'Notification Settings' }}
+        
         />
       </Stack.Navigator>
     </NavigationContainer>
