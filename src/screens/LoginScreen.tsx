@@ -1,5 +1,12 @@
 import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Alert, Animated, Easing, Dimensions } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Alert,
+  Animated,
+  Easing,
+  Dimensions,
+} from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import auth, {
@@ -10,6 +17,7 @@ import auth, {
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import * as Animatable from 'react-native-animatable';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import LottieView from 'lottie-react-native';
 
 // New color scheme
 const colors = {
@@ -36,7 +44,12 @@ type ChaiCupProps = {
   initialPosition: { x: number; y: number };
 };
 
-const ChaiCup: React.FC<ChaiCupProps> = ({ icon, size, color, initialPosition }) => {
+const ChaiCup: React.FC<ChaiCupProps> = ({
+  icon,
+  size,
+  color,
+  initialPosition,
+}) => {
   // Minimal, subtle animation: gentle fade-in and slight scale pulse
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -60,7 +73,7 @@ const ChaiCup: React.FC<ChaiCupProps> = ({ icon, size, color, initialPosition })
             duration: 1200,
             useNativeDriver: true,
           }),
-        ])
+        ]),
       ),
     ]).start();
   }, []);
@@ -119,18 +132,50 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ChaiCup icon="coffee-outline" size={40} color="#A0522D" initialPosition={{ x: width * 0.1, y: height * 0.1 }} />
-      <ChaiCup icon="cup-outline" size={35} color="#D4AF37" initialPosition={{ x: width * 0.7, y: height * 0.2 }} />
-      <ChaiCup icon="leaf" size={30} color="#228B22" initialPosition={{ x: width * 0.8, y: height * 0.6 }} />
-      <ChaiCup icon="cookie-outline" size={38} color="#D2691E" initialPosition={{ x: width * 0.2, y: height * 0.8 }} />
+      <ChaiCup
+        icon="coffee-outline"
+        size={60}
+        color="#e2e2e25e"
+        initialPosition={{ x: width * 0.1, y: height * 0.1 }}
+      />
+      <ChaiCup
+        icon="leaf"
+        size={45}
+        color="#009e0093"
+        initialPosition={{ x: width * 0.47, y: height * 0.405 }}
+      />
+      <ChaiCup
+        icon="cookie-outline"
+        size={58}
+        color="#e2e2e25e"
+        initialPosition={{ x: width * 0.6, y: height * 0.8 }}
+      />
 
       <View style={styles.content}>
-        <Animatable.View animation="fadeInDown" duration={1200} style={styles.header}>
+        {/* Lottie animation above ChaiHub text */}
+        <View style={styles.lottieContainer}>
+          <LottieView
+            source={require('../assets/lottie/TeaCup.json')} // TODO: Replace with actual asset path
+            autoPlay
+            loop
+            style={styles.lottie}
+          />
+        </View>
+        <Animatable.View
+          animation="fadeInDown"
+          duration={1200}
+          style={styles.header}
+        >
           <Text style={styles.title}>ChaiHub</Text>
           <Text style={styles.subtitle}>Your Daily Dose of Chai</Text>
         </Animatable.View>
 
-        <Animatable.View animation="fadeInUp" duration={1200} delay={300} style={styles.buttonContainer}>
+        <Animatable.View
+          animation="fadeInUp"
+          duration={1200}
+          delay={300}
+          style={styles.buttonContainer}
+        >
           {/* <Button
             mode="contained"
             onPress={handleGoogleSignIn}
@@ -150,7 +195,7 @@ const LoginScreen = () => {
             disabled={loading}
             loading={loading}
           >
-            {loading ? "Signing in..." : "Continue as Guest"}
+            {loading ? 'Signing in...' : 'Continue as Guest'}
           </Button>
         </Animatable.View>
       </View>
@@ -159,14 +204,24 @@ const LoginScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  lottieContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+    marginTop: -80,
+  },
+  lottie: {
+    width: 220,
+    height: 220,
+  },
   container: {
     flex: 1,
     backgroundColor: colors.background,
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 20,
     zIndex: 1,
   },
@@ -177,7 +232,8 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginBottom: 60,
+    marginBottom: 10,
+    marginTop: -40,
   },
   title: {
     fontFamily: 'PlaywriteHU-Regular',
@@ -195,6 +251,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '100%',
     maxWidth: 320,
+    marginTop: 40,
   },
   button: {
     marginTop: 15,

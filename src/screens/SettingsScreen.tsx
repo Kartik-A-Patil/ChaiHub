@@ -262,6 +262,24 @@ const SettingsScreen = ({ navigation }: { navigation: any }) => {
           descriptionStyle={dynamicStyles.listItemDescription}
           style={dynamicStyles.listItem}
         />
+        <List.Item
+          title="Seeding"
+          description="Learn more about ChaiHub"
+          left={props => (
+            <List.Icon {...props} icon="information" color={theme.text} />
+          )}
+          right={props => (
+            <List.Icon
+              {...props}
+              icon="chevron-right"
+              color={theme.textSecondary}
+            />
+          )}
+          onPress={()=> navigation.navigate('Seeding')}
+          titleStyle={dynamicStyles.listItemText}
+          descriptionStyle={dynamicStyles.listItemDescription}
+          style={dynamicStyles.listItem}
+        />
       </View>
 
       {/* Open Source Notice */}

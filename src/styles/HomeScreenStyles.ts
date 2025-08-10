@@ -70,8 +70,8 @@ export const homeScreenStyles = StyleSheet.create({
     marginTop: 2,
   },
   offerImage: {
-    width: 80,
-    height: 60,
+    width: 90,
+    height: 90,
     borderRadius: 10,
     resizeMode: 'cover',
   },

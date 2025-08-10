@@ -137,7 +137,6 @@ const ProductTypeScreen = () => {
           return 'Delicious options';
       }
     };
-
     if (!type) return null;
 
     return (
@@ -217,34 +216,30 @@ const ProductTypeScreen = () => {
         />
       </View>
 
-      <View style={styles.productInfo}>
+      <View style={[styles.productInfo, { paddingLeft: 2, paddingRight: 8, justifyContent: 'center' }]}>
         <Text style={styles.productName}>{item.name}</Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
           <Text style={styles.restaurantName}>{item.restaurant?.name}</Text>
           <Text style={styles.distance}>
             ({item.restaurant?.distance || ''})
           </Text>
         </View>
-        <Text style={styles.productDescription} numberOfLines={2}>
+        <Text style={styles.productDescription} numberOfLines={1}>
           {item.description}
         </Text>
 
         <View style={styles.productFooter}>
           <View style={styles.priceContainer}>
-            <Text style={styles.currency}>₹</Text>
-            <Text style={styles.price}>{item.price}</Text>
+            <Text style={styles.currency}>$</Text>
+            <Text style={styles.price}>{item.price.toFixed(2)}</Text>
           </View>
           <View style={styles.ratingContainer}>
             <Text style={styles.rating}>
-              ★ {item.restaurant?.rating || 'N/A'}
+              ★ {item.rating || 'N/A'}
             </Text>
           </View>
         </View>
       </View>
-
-      <TouchableOpacity style={styles.addButton}>
-        <Text style={styles.addButtonText}>+</Text>
-      </TouchableOpacity>
     </TouchableOpacity>
   );
 

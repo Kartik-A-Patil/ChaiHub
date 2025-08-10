@@ -1,15 +1,15 @@
 // Restaurant and Product data structures
-import Brownie from '../assets/brownie.jpeg';
 import Coffee from '../assets/coffee.jpg';
 import ColdCoffee from '../assets/cold_coffee.jpg';
 import Cookie from '../assets/Cookie.jpg';
 import LemonTea from '../assets/lemone_tea.jpeg';
 import MasalaChai from '../assets/Masala_Chai.jpg';
 import Pastry from '../assets/pastry.jpg';
-import Potato from '../assets/Potato.jpeg';
-import Roll from '../assets/roll.jpeg';
+import Potato from '../assets/Potato.jpg';
+import Roll from '../assets/roll.jpg';
 import Tea from '../assets/tea.jpg';
-import Resto from '../assets/Resto.webp';
+import Resto from '../assets/restaurant4.jpg';
+
 export type Restaurant = {
   id: string;
   name: string;
@@ -92,7 +92,7 @@ export const products: Product[] = [
     restaurantId: 'r1',
     name: 'Masala Chai',
     description: 'Spiced Indian tea',
-    price: 50,
+    price: 4.99,
     image: MasalaChai,
     type: 'tea',
   },
@@ -101,7 +101,7 @@ export const products: Product[] = [
     restaurantId: 'r1',
     name: 'Samosa',
     description: 'Crispy potato snack',
-    price: 30,
+    price: 3.49,
     image: Potato,
     type: 'snacks',
   },
@@ -110,7 +110,7 @@ export const products: Product[] = [
     restaurantId: 'r1',
     name: 'Ginger Tea',
     description: 'Refreshing ginger flavored tea',
-    price: 55,
+    price: 5.49,
     image: Tea,
     type: 'tea',
   },
@@ -119,7 +119,7 @@ export const products: Product[] = [
     restaurantId: 'r1',
     name: 'Kesar Chai',
     description: 'Saffron infused chai',
-    price: 70,
+    price: 6.99,
     image: Tea,
     type: 'tea',
   },
@@ -129,7 +129,7 @@ export const products: Product[] = [
     restaurantId: 'r2',
     name: 'Cappuccino',
     description: 'Classic Italian coffee',
-    price: 80,
+    price: 7.99,
     image: Coffee,
     type: 'coffee',
   },
@@ -138,18 +138,9 @@ export const products: Product[] = [
     restaurantId: 'r2',
     name: 'Espresso',
     description: 'Strong and bold espresso shot',
-    price: 60,
+    price: 5.99,
     image: Coffee,
     type: 'coffee',
-  },
-  {
-    id: 'p7',
-    restaurantId: 'r2',
-    name: 'Brownie',
-    description: 'Chocolate fudge brownie',
-    price: 40,
-    image: Brownie,
-    type: 'snacks',
   },
   // Snack Shack
   {
@@ -157,7 +148,7 @@ export const products: Product[] = [
     restaurantId: 'r3',
     name: 'Veg Puff',
     description: 'Flaky pastry with veggie filling',
-    price: 35,
+    price: 3.99,
     image: Pastry,
     type: 'snacks',
   },
@@ -166,7 +157,7 @@ export const products: Product[] = [
     restaurantId: 'r3',
     name: 'Paneer Roll',
     description: 'Paneer stuffed roll',
-    price: 45,
+    price: 4.99,
     image: Roll,
     type: 'snacks',
   },
@@ -175,7 +166,7 @@ export const products: Product[] = [
     restaurantId: 'r3',
     name: 'Lemon Tea',
     description: 'Tangy lemon flavored tea',
-    price: 40,
+    price: 4.49,
     image: LemonTea,
     type: 'tea',
   },
@@ -185,7 +176,7 @@ export const products: Product[] = [
     restaurantId: 'r4',
     name: 'Green Tea',
     description: 'Healthy green tea',
-    price: 60,
+    price: 5.99,
     image: Tea,
     type: 'tea',
   },
@@ -194,7 +185,7 @@ export const products: Product[] = [
     restaurantId: 'r4',
     name: 'Cookies',
     description: 'Freshly baked cookies',
-    price: 25,
+    price: 2.99,
     image: Cookie,
     type: 'snacks',
   },
@@ -204,7 +195,7 @@ export const products: Product[] = [
     restaurantId: 'r5',
     name: 'Cold Brew',
     description: 'Chilled cold brew coffee',
-    price: 90,
+    price: 8.99,
     image: ColdCoffee,
     type: 'coffee',
   },
@@ -213,7 +204,7 @@ export const products: Product[] = [
     restaurantId: 'r5',
     name: 'Mocha',
     description: 'Chocolate flavored coffee',
-    price: 85,
+    price: 8.49,
     image: Coffee,
     type: 'coffee',
   },
@@ -222,7 +213,7 @@ export const products: Product[] = [
     restaurantId: 'r5',
     name: 'Banana Bread',
     description: 'Moist banana bread slice',
-    price: 50,
+    price: 4.99,
     image: Pastry,
     type: 'snacks',
   },
@@ -231,7 +222,7 @@ export const products: Product[] = [
     restaurantId: 'r5',
     name: 'Hot Chocolate',
     description: 'Rich hot chocolate drink',
-    price: 70,
+    price: 6.99,
     image: Coffee,
     type: 'others',
   },

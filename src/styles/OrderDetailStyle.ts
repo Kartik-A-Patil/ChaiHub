@@ -175,8 +175,6 @@ export const OrderDetailsStyles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 12,
     marginTop: 8,
-    borderTopWidth: 2,
-    borderTopColor: '#F0F0F0',
   },
   totalLabel: {
     fontSize: 16,

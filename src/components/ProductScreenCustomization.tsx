@@ -19,15 +19,21 @@ if (
 }
 
 const SIZE_OPTIONS = [
-  { label: 'S', value: 'Small' },
-  { label: 'M', value: 'Medium' },
-  { label: 'L', value: 'Large' },
+  { label: 'S', value: 'Small', priceMultiplier: 0.85 },
+  { label: 'M', value: 'Medium', priceMultiplier: 1.0 },
+  { label: 'L', value: 'Large', priceMultiplier: 1.25 },
 ];
 const MILK_TYPES = ['No Milk', 'Regular', 'Soy'];
+const MILK_PRICES = { 'No Milk': 0, 'Regular': 0.25, 'Soy': 0.5 };
 const SPICE_BLEND = [{ label: 'Ginger' }, { label: 'Elaichi' }];
 const STRENGTH = ['Mild', 'Regular', 'Strong'];
-const ADDONS = ['Mint', 'Lemon'];
+const STRENGTH_PRICES = { 'Mild': 0, 'Regular': 0, 'Strong': 0.25 };
+const TEA_ADDONS = ['Mint', 'Lemon'];
+const TEA_ADDON_PRICES = { 'Mint': 0.4, 'Lemon': 0.4 };
+const COFFEE_ADDONS = ['Extra Shot', 'Vanilla Syrup', 'Caramel Syrup', 'Whipped Cream'];
+const COFFEE_ADDON_PRICES = { 'Extra Shot': 1.0, 'Vanilla Syrup': 0.5, 'Caramel Syrup': 0.5, 'Whipped Cream': 0.75 };
 const SWEETNESS_OPTIONS = ['Less Sweet', 'Regular', 'Extra Sweet'];
+const SWEETNESS_PRICES = { 'Less Sweet': 0, 'Regular': 0, 'Extra Sweet': 0.2 };
 
 interface CustomizationAccordionProps {
   title: string;
@@ -60,6 +66,8 @@ const CustomizationAccordion: React.FC<CustomizationAccordionProps> = ({ title, 
 };
 
 interface Props {
+  productType: string;
+  basePrice?: number;
   selectedSize: string;
   setSelectedSize: (size: string) => void;
   selectedMilk: string;
@@ -76,6 +84,8 @@ interface Props {
 }
 
 const ProductScreenCustomization: React.FC<Props> = ({
+  productType,
+  basePrice = 0,
   selectedSize,
   setSelectedSize,
   selectedMilk,
@@ -112,7 +122,9 @@ const ProductScreenCustomization: React.FC<Props> = ({
     hapticActions.selection();
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setter(value);
-  };  const handleSpiceSelection = (spice: string) => {
+  };
+
+  const handleSpiceSelection = (spice: string) => {
     const newSpices = { ...selectedSpices };
     if (newSpices[spice] === 'Regular') {
       newSpices[spice] = 'None';
@@ -129,60 +141,167 @@ const ProductScreenCustomization: React.FC<Props> = ({
     handleSelection(setSelectedAddons, newAddons);
   };
 
-  const sections = [
-    {
+  // Define sections based on product type
+  const getSections = () => {
+    const baseSizeSection = {
       title: 'Size',
       selectedValue: selectedSize,
-      options: SIZE_OPTIONS.map(o => ({ ...o, key: o.value })),
+      options: SIZE_OPTIONS.map(o => ({
+        ...o,
+        key: o.value,
+        displayLabel: basePrice > 0 
+          ? `${o.label} $${(basePrice * o.priceMultiplier).toFixed(2)}`
+          : o.label
+      })),
       setter: setSelectedSize,
       isMulti: false,
-    },
-    {
-      title: 'Milk',
-      selectedValue: selectedMilk,
-      options: MILK_TYPES.map(m => ({ key: m, label: m })),
-      setter: setSelectedMilk,
-      isMulti: false,
-    },
-    ...(showSweetness
-      ? [
-          {
-            title: 'Sweetness',
-            selectedValue: selectedSweetness,
-            options: SWEETNESS_OPTIONS.map(s => ({ key: s, label: s })),
-            setter: setSelectedSweetness,
-            isMulti: false,
-          },
-        ]
-      : []),
-    {
-      title: 'Spices',
-      selectedValue:
-        Object.entries(selectedSpices)
-          .filter(([, value]) => value === 'Regular')
-          .map(([key]) => key)
-          .join(', ') || 'None',
-      options: SPICE_BLEND.map(s => ({ key: s.label, label: s.label })),
-      setter: handleSpiceSelection,
-      isMulti: true,
-      state: selectedSpices,
-    },
-    {
-      title: 'Strength',
-      selectedValue: selectedStrength,
-      options: STRENGTH.map(s => ({ key: s, label: s })),
-      setter: setSelectedStrength,
-      isMulti: false,
-    },
-    {
-      title: 'Add-ons',
-      selectedValue: selectedAddons.join(', ') || 'None',
-      options: ADDONS.map(a => ({ key: a, label: a })),
-      setter: handleAddonSelection,
-      isMulti: true,
-      state: selectedAddons,
-    },
-  ];
+    };
+
+    if (productType === 'tea') {
+      // Tea: Show all options
+      return [
+        baseSizeSection,
+        {
+          title: 'Milk',
+          selectedValue: selectedMilk,
+          options: MILK_TYPES.map(m => ({ 
+            key: m, 
+            label: m,
+            displayLabel: MILK_PRICES[m as keyof typeof MILK_PRICES] > 0 
+              ? `${m} +$${MILK_PRICES[m as keyof typeof MILK_PRICES].toFixed(2)}`
+              : m
+          })),
+          setter: setSelectedMilk,
+          isMulti: false,
+        },
+        ...(showSweetness
+          ? [
+              {
+                title: 'Sweetness',
+                selectedValue: selectedSweetness,
+                options: SWEETNESS_OPTIONS.map(s => ({ 
+                  key: s, 
+                  label: s,
+                  displayLabel: SWEETNESS_PRICES[s as keyof typeof SWEETNESS_PRICES] > 0
+                    ? `${s} +$${SWEETNESS_PRICES[s as keyof typeof SWEETNESS_PRICES].toFixed(2)}`
+                    : s
+                })),
+                setter: setSelectedSweetness,
+                isMulti: false,
+              },
+            ]
+          : []),
+        {
+          title: 'Spices',
+          selectedValue:
+            Object.entries(selectedSpices)
+              .filter(([, value]) => value === 'Regular')
+              .map(([key]) => key)
+              .join(', ') || 'None',
+          options: SPICE_BLEND.map(s => ({ 
+            key: s.label, 
+            label: s.label,
+            displayLabel: `${s.label} +$0.30`
+          })),
+          setter: handleSpiceSelection,
+          isMulti: true,
+          state: selectedSpices,
+        },
+        {
+          title: 'Strength',
+          selectedValue: selectedStrength,
+          options: STRENGTH.map(s => ({ 
+            key: s, 
+            label: s,
+            displayLabel: STRENGTH_PRICES[s as keyof typeof STRENGTH_PRICES] > 0
+              ? `${s} +$${STRENGTH_PRICES[s as keyof typeof STRENGTH_PRICES].toFixed(2)}`
+              : s
+          })),
+          setter: setSelectedStrength,
+          isMulti: false,
+        },
+        {
+          title: 'Add-ons',
+          selectedValue: selectedAddons.join(', ') || 'None',
+          options: TEA_ADDONS.map(a => ({ 
+            key: a, 
+            label: a,
+            displayLabel: `${a} +$${TEA_ADDON_PRICES[a as keyof typeof TEA_ADDON_PRICES].toFixed(2)}`
+          })),
+          setter: handleAddonSelection,
+          isMulti: true,
+          state: selectedAddons,
+        },
+      ];
+    } else if (productType === 'coffee') {
+      // Coffee: Remove spices, add different add-ons
+      return [
+        baseSizeSection,
+        {
+          title: 'Milk',
+          selectedValue: selectedMilk,
+          options: MILK_TYPES.map(m => ({ 
+            key: m, 
+            label: m,
+            displayLabel: m === 'Soy' ? `${m} +$0.60` :
+                        m === 'Regular' ? `${m} +$0.30` : m
+          })),
+          setter: setSelectedMilk,
+          isMulti: false,
+        },
+        ...(showSweetness
+          ? [
+              {
+                title: 'Sweetness',
+                selectedValue: selectedSweetness,
+                options: SWEETNESS_OPTIONS.map(s => ({ 
+                  key: s, 
+                  label: s,
+                  displayLabel: s === 'Extra Sweet' 
+                    ? `${s} +$0.25`
+                    : s
+                })),
+                setter: setSelectedSweetness,
+                isMulti: false,
+              },
+            ]
+          : []),
+        {
+          title: 'Strength',
+          selectedValue: selectedStrength,
+          options: STRENGTH.map(s => ({ 
+            key: s, 
+            label: s,
+            displayLabel: s === 'Strong'
+              ? `${s} +$0.40`
+              : s
+          })),
+          setter: setSelectedStrength,
+          isMulti: false,
+        },
+        {
+          title: 'Add-ons',
+          selectedValue: selectedAddons.join(', ') || 'None',
+          options: COFFEE_ADDONS.map(a => ({ 
+            key: a, 
+            label: a,
+            displayLabel: `${a} +$${COFFEE_ADDON_PRICES[a as keyof typeof COFFEE_ADDON_PRICES].toFixed(2)}`
+          })),
+          setter: handleAddonSelection,
+          isMulti: true,
+          state: selectedAddons,
+        },
+      ];
+    } else if (productType === 'snacks' || productType === 'others') {
+      // Snacks and Others: Only show size
+      return [baseSizeSection];
+    }
+
+    // Default fallback
+    return [baseSizeSection];
+  };
+
+  const sections = getSections();
 
   return (
     <View style={styles.container}>
@@ -196,7 +315,15 @@ const ProductScreenCustomization: React.FC<Props> = ({
             onToggle={() => toggleAccordion(title)}
           >
             <View style={styles.optionsContainer}>
-              {options.map(opt => {
+              {options.map((opt: any, index: number) => {
+                // Calculate dynamic width based on number of options
+                const optionsPerRow = options.length === 1 ? 1 :
+                                    options.length === 2 ? 2 :
+                                    options.length === 3 ? 3 :
+                                    options.length === 4 ? 2 :
+                                    3; // For 5+ options, use 3 per row
+                const dynamicWidth = (100 / optionsPerRow) - 2; // Subtract for gaps
+                
                 // Type guards for state
                 let isSelected = false;
                 if (isMulti) {
@@ -223,6 +350,7 @@ const ProductScreenCustomization: React.FC<Props> = ({
                     style={[
                       styles.optionButton,
                       isSelected && styles.selectedOption,
+                      { width: `${dynamicWidth}%` }
                     ]}
                     onPress={() => {
                       if (isMulti) {
@@ -242,7 +370,21 @@ const ProductScreenCustomization: React.FC<Props> = ({
                         isSelected && styles.selectedLabel,
                       ]}
                     >
-                      {opt.label}
+                      {opt.displayLabel ? (
+                        <>
+                          {opt.label}
+                          {opt.displayLabel !== opt.label && (
+                            <Text style={[
+                              styles.priceText,
+                              isSelected && styles.selectedPriceText
+                            ]}>
+                              {'\n' + opt.displayLabel.replace(opt.label, '').trim()}
+                            </Text>
+                          )}
+                        </>
+                      ) : (
+                        opt.label
+                      )}
                     </Text>
                   </TouchableOpacity>
                 );
@@ -297,17 +439,19 @@ const styles = StyleSheet.create({
   optionsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: 8,
   },
   optionButton: {
-    flex: 1,
     paddingVertical: 12,
+    paddingHorizontal: 6,
     borderRadius: 12,
     backgroundColor: '#f8f9fa',
     borderWidth: 1,
     borderColor: '#e9ecef',
     alignItems: 'center',
-    minWidth: '30%',
+    justifyContent: 'center',
+    minHeight: 44,
+    marginBottom: 4,
   },
   selectedOption: {
     backgroundColor: '#1a1a1a',
@@ -316,11 +460,22 @@ const styles = StyleSheet.create({
   optionLabel: {
     color: '#495057',
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: 12,
     textAlign: 'center',
+    lineHeight: 15,
+    flexWrap: 'wrap',
   },
   selectedLabel: {
     color: '#ffffff',
+  },
+  priceText: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: '#6c757d',
+    lineHeight: 13,
+  },
+  selectedPriceText: {
+    color: '#e9ecef',
   },
 });
 

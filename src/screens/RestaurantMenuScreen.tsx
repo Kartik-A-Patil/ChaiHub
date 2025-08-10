@@ -1,8 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import imageMap from '../utils/imageMap';
 import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
-import Svg, { Circle, Path, Rect } from 'react-native-svg';
-
+import { ScrollView } from 'react-native-gesture-handler';
 import { Snackbar } from 'react-native-paper';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../store/store';
@@ -13,7 +12,6 @@ import { useFirestore } from '../contexts/FirestoreContext';
 import StickyFilterBar from '../components/StickyFilterBar';
 import { hapticActions } from '../utils/hapticUtils';
 
-// Type for route params
 interface MenuScreenRouteParams {
   id: string;
 }
@@ -91,23 +89,21 @@ const RestaurantMenuScreen = () => {
         </Text>
       </View>
 
-      {/* Best Selling */}
       <Text style={RestaurantMenuStyles.menuTitle}>Best Selling</Text>
-      <FlatList
-        data={bestSelling}
-        keyExtractor={item => item.id}
+      <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
         style={RestaurantMenuStyles.bestSellingList}
-        contentContainerStyle={{ paddingRight: 20 }}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() =>
-              (navigation as any).navigate('Product', { id: item.id })
-            }
-            activeOpacity={0.8}
-          >
-            <View style={RestaurantMenuStyles.bestSellingItem}>
+        contentContainerStyle={{ paddingRight: 40, paddingLeft: 10 }}
+      >
+        {bestSelling.map(item => (
+          <View key={item.id} style={RestaurantMenuStyles.bestSellingItem}>
+            <TouchableOpacity
+              onPress={() =>
+                (navigation as any).navigate('Product', { id: item.id })
+              }
+              activeOpacity={0.8}
+            >
               <Image
                 source={
                   typeof item.image === 'string' && imageMap[item.image]
@@ -120,31 +116,30 @@ const RestaurantMenuScreen = () => {
                 <Text style={RestaurantMenuStyles.bestSellingName}>
                   {item.name}
                 </Text>
-                <Text style={RestaurantMenuStyles.menuPrice}>
-                  ₹{item.price}
-                </Text>
-                <Text style={RestaurantMenuStyles.details}>
-                  {item.rating ? `${item.rating} ★` : ''}
-                </Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <Text style={RestaurantMenuStyles.menuPrice}>
+                    ${item.price.toFixed(2)}
+                  </Text>
+                  <Text style={RestaurantMenuStyles.details}>
+                    {item.rating ? `${item.rating} ★` : ''}
+                  </Text>
+                </View>
               </View>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
-      {/* Sticky Filter Bar */}
+            </TouchableOpacity>
+          </View>
+        ))}
+      </ScrollView>
       <StickyFilterBar activeTab={activeTab} setActiveTab={setActiveTab} />
-      {/* Menu section title */}
       <Text style={RestaurantMenuStyles.menuTitle}>Menu</Text>
     </>
   );
 
-  // Minimal and attractive Empty List with icon
   const EmptyList = () => {
     return (
       <View style={{ alignItems: 'center', marginTop: 48, marginBottom: 48 }}>
         <Image
           source={require('../assets/spllied.png')}
-          style={{ width: 146, height: 146}}
+          style={{ width: 146, height: 146 }}
         />
         <Text
           style={{
@@ -171,7 +166,6 @@ const RestaurantMenuScreen = () => {
     );
   };
 
-  // FlatList data: just menu items, sticky filter bar is in header
   type FlatListItem = (typeof menuItems)[number];
   const flatListData: FlatListItem[] = menuItems;
 
@@ -212,7 +206,7 @@ const RestaurantMenuScreen = () => {
                   </View>
                   <View style={RestaurantMenuStyles.menuBottomRow}>
                     <Text style={RestaurantMenuStyles.menuPrice}>
-                      ₹{product.price}
+                      ${product.price.toFixed(2)}
                     </Text>
                     <TouchableOpacity
                       style={RestaurantMenuStyles.addToCartButton}

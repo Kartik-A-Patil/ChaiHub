@@ -12,12 +12,55 @@ import {
 } from '../data/data';
 
 const SeedingScreen = () => {
-  const seedProducts = async () => {
+  const seedRestaurants = async () => {
+    try {
+      const restaurantsCollection = firestore().collection('restaurants');
+      const restaurantIdMapping: { [key: string]: string } = {};
+      
+      // First, seed restaurants and store their Firebase document IDs
+      for (let i = 0; i < seedRestaurantsData.length; i++) {
+        const restaurant = seedRestaurantsData[i];
+        const docRef = await restaurantsCollection.add(restaurant);
+        // Map old ID (r1, r2, etc.) to new Firebase document ID
+        restaurantIdMapping[`r${i + 1}`] = docRef.id;
+      }
+      
+      Alert.alert('Success', 'Restaurants seeded successfully!');
+      return restaurantIdMapping;
+    } catch (error) {
+      console.error('Error seeding restaurants:', error);
+      Alert.alert('Error', 'Error seeding restaurants.');
+      throw error;
+    }
+  };
+
+  const seedProducts = async (restaurantIdMapping?: { [key: string]: string }) => {
     try {
       const productsCollection = firestore().collection('products');
+      
+      // If no mapping provided, try to get existing restaurants
+      if (!restaurantIdMapping) {
+        const restaurantsSnapshot = await firestore().collection('restaurants').get();
+        if (restaurantsSnapshot.empty) {
+          Alert.alert('Error', 'Please seed restaurants first!');
+          return;
+        }
+        
+        // Create mapping from restaurant names to IDs (fallback approach)
+        const tempMapping: { [key: string]: string } = {};
+        restaurantsSnapshot.docs.forEach((doc, index) => {
+          tempMapping[`r${index + 1}`] = doc.id;
+        });
+        restaurantIdMapping = tempMapping;
+      }
+      
       for (const product of seedProductsData) {
-        // Use product as is from seedData (image and restaurantId already set)
-        await productsCollection.add(product);
+        // Replace the old restaurantId with the actual Firebase document ID
+        const updatedProduct = {
+          ...product,
+          restaurantId: restaurantIdMapping[product.restaurantId] || product.restaurantId,
+        };
+        await productsCollection.add(updatedProduct);
       }
       Alert.alert('Success', 'Products seeded successfully!');
     } catch (error) {
@@ -26,18 +69,35 @@ const SeedingScreen = () => {
     }
   };
 
-
-  const seedRestaurants = async () => {
+  const seedRestaurantsAndProducts = async () => {
     try {
-      const restaurantsCollection = firestore().collection('restaurants');
-      for (const restaurant of seedRestaurantsData) {
-        // Use restaurant as is from seedData (image already set)
-        await restaurantsCollection.add(restaurant);
+      const restaurantIdMapping = await seedRestaurants();
+      if (restaurantIdMapping) {
+        await seedProducts(restaurantIdMapping);
+        Alert.alert('Success', 'Both restaurants and products seeded successfully!');
       }
-      Alert.alert('Success', 'Restaurants seeded successfully!');
     } catch (error) {
-      console.error('Error seeding restaurants:', error);
-      Alert.alert('Error seeding restaurants.');
+      console.error('Error seeding restaurants and products:', error);
+      Alert.alert('Error', 'Error seeding data.');
+    }
+  };
+
+  const clearAllData = async () => {
+    try {
+      // Clear products
+      const productsSnapshot = await firestore().collection('products').get();
+      const productDeletePromises = productsSnapshot.docs.map(doc => doc.ref.delete());
+      await Promise.all(productDeletePromises);
+
+      // Clear restaurants
+      const restaurantsSnapshot = await firestore().collection('restaurants').get();
+      const restaurantDeletePromises = restaurantsSnapshot.docs.map(doc => doc.ref.delete());
+      await Promise.all(restaurantDeletePromises);
+
+      Alert.alert('Success', 'All data cleared successfully!');
+    } catch (error) {
+      console.error('Error clearing data:', error);
+      Alert.alert('Error', 'Error clearing data.');
     }
   };
 
@@ -46,11 +106,36 @@ const SeedingScreen = () => {
       <Card style={styles.card}>
         <Card.Content>
           <Text variant="titleLarge" style={styles.title}>Data Seeding</Text>
-          <Button mode="contained" onPress={seedProducts} style={styles.button}>
-            Seed Products
+          <Button mode="contained" onPress={seedRestaurantsAndProducts} style={styles.button}>
+            Seed Restaurants & Products
           </Button>
-          <Button mode="contained" onPress={seedRestaurants} style={styles.button}>
-            Seed Restaurants
+          <Button mode="contained" onPress={() => seedProducts()} style={styles.button}>
+            Seed Products Only
+          </Button>
+          <Button mode="contained" onPress={() => seedRestaurants()} style={styles.button}>
+            Seed Restaurants Only
+          </Button>
+          <Button mode="outlined" onPress={clearAllData} style={styles.button}>
+            Clear All Data
+          </Button>
+          <Button mode="outlined" onPress={async () => {
+            try {
+              const restaurantsSnapshot = await firestore().collection('restaurants').get();
+              const productsSnapshot = await firestore().collection('products').get();
+              
+              let message = `Restaurants: ${restaurantsSnapshot.size}\nProducts: ${productsSnapshot.size}\n\nRestaurant IDs:\n`;
+              restaurantsSnapshot.docs.forEach((doc, index) => {
+                const data = doc.data();
+                message += `${data.name}: ${doc.id}\n`;
+              });
+              
+              Alert.alert('Database Status', message);
+            } catch (error) {
+              console.error('Error checking status:', error);
+              Alert.alert('Error', 'Error checking database status.');
+            }
+          }} style={styles.button}>
+            Check Database Status
           </Button>
           <Button mode="contained" onPress={async () => {
             try {

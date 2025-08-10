@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import ProductScreenCustomization from '../components/ProductScreenCustomization';
 import {
   View,
@@ -50,7 +50,7 @@ const ProductScreen: React.FC = () => {
     availableSweetness = [];
   }
 
-  const [selectedSize, setSelectedSize] = useState(availableSizes[1] || '');
+  const [selectedSize, setSelectedSize] = useState(availableSizes[1] || 'Medium');
   const [selectedSweetness, setSelectedSweetness] = useState(
     availableSweetness[1] || '',
   );
@@ -69,7 +69,27 @@ const ProductScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  useEffect(() => {
+    console.log('ProductScreen mounted with product:', product);
+  }, [product]);
 
+  // Reset customization options when product type changes
+  useEffect(() => {
+    if (product) {
+      // Reset to defaults based on product type
+      if (product.type === 'snacks' || product.type === 'others') {
+        // For snacks and others, reset all non-size options
+        setSelectedMilk('Regular');
+        setSelectedSpices({ Ginger: 'None', Elaichi: 'None' });
+        setSelectedStrength('Regular');
+        setSelectedAddons([]);
+        setSelectedSweetness('Regular');
+      } else if (product.type === 'coffee') {
+        // For coffee, reset spices
+        setSelectedSpices({ Ginger: 'None', Elaichi: 'None' });
+      }
+    }
+  }, [product?.type]);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -87,33 +107,109 @@ const ProductScreen: React.FC = () => {
   const onDismissSnackBar = () => setSnackbarVisible(false);
 
   const getCustomizedPrice = () => {
-    let price = product?.price || 0;
-    if (selectedMilk !== 'No Mink') price += 10;
+    let basePrice = product?.price || 0;
+    
+    // Size multipliers - affects all product types
+    const sizeMultipliers = {
+      'Small': 0.85,
+      'Medium': 1.0,
+      'Large': 1.25,
+    };
+    
+    let price = basePrice * (sizeMultipliers[selectedSize as keyof typeof sizeMultipliers] || 1.0);
+    
+    // Product type specific customizations
+    if (product?.type === 'tea') {
+      // Tea customizations
+      if (selectedMilk === 'Soy') price += 0.5;
+      if (selectedMilk === 'Regular') price += 0.25;
+      // No charge for 'No Milk'
+      
+      if (selectedSpices.Ginger === 'Regular') price += 0.3;
+      if (selectedSpices.Elaichi === 'Regular') price += 0.3;
+      
+      if (selectedStrength === 'Strong') price += 0.25;
+      // No charge for 'Mild' and 'Regular'
+      
+      // Tea addons (Mint, Lemon)
+      price += selectedAddons.length * 0.4;
+      
+      // Sweetness adjustment for tea
+      if (selectedSweetness === 'Extra Sweet') price += 0.2;
+      // No charge for 'Less Sweet' and 'Regular'
+      
+    } else if (product?.type === 'coffee') {
+      // Coffee customizations
+      if (selectedMilk === 'Soy') price += 0.6;
+      if (selectedMilk === 'Regular') price += 0.3;
+      // No charge for 'No Milk'
+      
+      if (selectedStrength === 'Strong') price += 0.4;
+      // No charge for 'Mild' and 'Regular'
+      
+      // Coffee addons are more expensive (Extra Shot, Vanilla Syrup, etc.)
+      const coffeeAddonPrices = {
+        'Extra Shot': 1.0,
+        'Vanilla Syrup': 0.5,
+        'Caramel Syrup': 0.5,
+        'Whipped Cream': 0.75,
+      };
+      
+      selectedAddons.forEach(addon => {
+        price += coffeeAddonPrices[addon as keyof typeof coffeeAddonPrices] || 0.5;
+      });
+      
+      // Sweetness adjustment for coffee
+      if (selectedSweetness === 'Extra Sweet') price += 0.25;
+      // No charge for 'Less Sweet' and 'Regular'
+      
+    } else if (product?.type === 'snacks' || product?.type === 'others') {
+      // For snacks and others, only size affects price
+      // No additional customization charges
+    }
 
-    if (selectedSpices.Ginger === 'Regular') price += 5;
-    if (selectedSpices.Elaichi === 'Regular') price += 5;
-    if (selectedStrength === 'Strong') price += 5;
-    price += selectedAddons.length * 10;
     return price * quantity;
   };
 
   const handleAddToCart = async () => {
     if (product) {
       hapticActions.addToCart();
-      await dispatch(
-        addItemAsync({
-          id: product.id,
-          name: product.name,
-          price: getCustomizedPrice(),
-          quantity: quantity,
-          size: selectedSize,
+      
+      // Build cart item based on product type
+      const baseItem = {
+        id: product.id,
+        name: product.name,
+        price: getCustomizedPrice(),
+        quantity: quantity,
+        size: selectedSize,
+      };
+
+      let cartItem;
+      if (product.type === 'tea') {
+        // Tea gets all options
+        cartItem = {
+          ...baseItem,
           sweetness: selectedSweetness,
           milk: selectedMilk,
           spices: selectedSpices,
           strength: selectedStrength,
           addons: selectedAddons,
-        }),
-      );
+        };
+      } else if (product.type === 'coffee') {
+        // Coffee gets everything except spices
+        cartItem = {
+          ...baseItem,
+          sweetness: selectedSweetness,
+          milk: selectedMilk,
+          strength: selectedStrength,
+          addons: selectedAddons,
+        };
+      } else {
+        // Snacks and others only get size
+        cartItem = baseItem;
+      }
+
+      await dispatch(addItemAsync(cartItem));
       await dispatch(loadCart());
       setSnackbarVisible(true);
     }
@@ -160,7 +256,7 @@ const ProductScreen: React.FC = () => {
               </Text>
             </View>
             <Text style={ProductScreenStyles.priceText}>
-              ₹{getCustomizedPrice()}
+              ${getCustomizedPrice().toFixed(2)}
             </Text>
           </View>
 
@@ -186,32 +282,28 @@ const ProductScreen: React.FC = () => {
                 <Icon name="time-outline" size={20} color="#1a1a1a" />
               </View>
               <Text style={ProductScreenStyles.deliverySubText}>10 min</Text>
-              <Text style={ProductScreenStyles.deliveryMainText}>
-                Delivery
-              </Text>
+              <Text style={ProductScreenStyles.deliveryMainText}>Delivery</Text>
             </View>
 
             <View style={ProductScreenStyles.deliveryInfoItem}>
               <View style={ProductScreenStyles.deliveryIconContainer}>
                 <Icon name="star" size={20} color="#FFD700" />
               </View>
-              <Text style={ProductScreenStyles.deliverySubText}>26+</Text>
-              <Text style={ProductScreenStyles.deliveryMainText}>
-                Reviews
-              </Text>
+              <Text style={ProductScreenStyles.deliverySubText}>{product.reviews}+</Text>
+              <Text style={ProductScreenStyles.deliveryMainText}>Reviews</Text>
             </View>
 
             <View style={ProductScreenStyles.deliveryInfoItem}>
               <View style={ProductScreenStyles.deliveryIconContainer}>
-                <Text style={ProductScreenStyles.ratingText}>
-                  4.8
-                </Text>
+                <Text style={ProductScreenStyles.ratingText}>{product.rating}</Text>
               </View>
               <Text style={ProductScreenStyles.deliverySubText}>Rating</Text>
             </View>
           </View>
 
           <ProductScreenCustomization
+            productType={product.type}
+            basePrice={product.price}
             selectedMilk={selectedMilk}
             selectedSize={selectedSize}
             setSelectedSize={setSelectedSize}
@@ -227,7 +319,6 @@ const ProductScreen: React.FC = () => {
             showSweetness={availableSweetness.length > 0}
           />
         </View>
-
       </ScrollView>
 
       <View style={ProductScreenStyles.bottomCartSection}>
@@ -240,14 +331,10 @@ const ProductScreen: React.FC = () => {
                 setQuantity(q => Math.max(1, q - 1));
               }}
             >
-              <Text style={ProductScreenStyles.quantityButtonText}>
-                -
-              </Text>
+              <Text style={ProductScreenStyles.quantityButtonText}>-</Text>
             </TouchableOpacity>
 
-            <Text style={ProductScreenStyles.quantityText}>
-              {quantity}
-            </Text>
+            <Text style={ProductScreenStyles.quantityText}>{quantity}</Text>
 
             <TouchableOpacity
               style={ProductScreenStyles.quantityButton}
@@ -256,9 +343,7 @@ const ProductScreen: React.FC = () => {
                 setQuantity(q => q + 1);
               }}
             >
-              <Text style={ProductScreenStyles.quantityButtonText}>
-                +
-              </Text>
+              <Text style={ProductScreenStyles.quantityButtonText}>+</Text>
             </TouchableOpacity>
           </View>
 

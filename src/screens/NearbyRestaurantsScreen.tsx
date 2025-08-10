@@ -51,7 +51,6 @@ const NearbyRestaurantsScreen = () => {
 
   return (
     <View style={NearbyRestaurantsStyles.container}>
-      {/* Modern sorting header */}
       <View style={NearbyRestaurantsStyles.headerContainer}>
         <View style={NearbyRestaurantsStyles.sortContainer}>
           <TouchableOpacity 

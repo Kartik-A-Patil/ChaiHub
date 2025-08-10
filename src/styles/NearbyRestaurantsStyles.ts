@@ -51,25 +51,21 @@ const NearbyRestaurantsStyles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
   },
-
-  // List styles
   listContainer: {
     paddingBottom: 20,
   },
-  
-  // Restaurant card styles
   restaurantCard: {
     flexDirection: 'row',
     backgroundColor: '#ffffff',
     borderRadius: 16,
-    padding: 12,
-    marginBottom: 16,
+    padding: 5,
+    marginBottom: 10,
     borderWidth: 0.4,
     borderColor: '#c9c9c9ff',
   },
   restaurantImage: {
-    width: 88,
-    height: 88,
+    width: 110,
+    height: 110,
     borderRadius: 12,
     backgroundColor: '#f8f9fa',
   },
@@ -129,7 +125,6 @@ const NearbyRestaurantsStyles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  // Legacy styles (keeping for backward compatibility)
   filterRow: {
     flexDirection: 'row',
     marginBottom: 24,

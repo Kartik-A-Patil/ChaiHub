@@ -19,7 +19,7 @@ import { homeScreenStyles as styles } from '../styles/HomeScreenStyles';
 import { useFirestore } from '../contexts/FirestoreContext';
 import { quickMenu } from '../data/data';
 import imageMap from '../utils/imageMap';
-import { hapticActions } from '../utils/hapticUtils';
+import LottieView from 'lottie-react-native';
 const Showcase = require('../assets/showcase.png');
 type RootStackParamList = {
   Login: undefined;
@@ -58,8 +58,6 @@ const OfferLoader = () => (
   </ContentLoader>
 );
 
-
-
 const HomeScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const {
@@ -81,8 +79,6 @@ const HomeScreen = () => {
       setRefreshing(false);
     }
   }, [fetchProducts, fetchSpecialOffers]);
-
-  // Helper to get 3 random products
 
   function getRandomProducts<T>(arr: T[], n: number): T[] {
     if (!Array.isArray(arr) || arr.length <= n) return arr;
@@ -109,7 +105,6 @@ const HomeScreen = () => {
       }
       contentContainerStyle={{ paddingBottom: 80 }}
     >
-      {/* Custom Header - Improved to match reference */}
       <Animatable.View
         animation="fadeInDown"
         duration={1000}
@@ -122,9 +117,7 @@ const HomeScreen = () => {
           alignItems: 'flex-start',
         }}
       >
-        {/* Right content */}
         <View style={{ flex: 1 }}>
-          {/* Decorative icons spread across the header */}
           <Animatable.View animation="bounceInDown" delay={500}>
             <MaterialCommunityIcons
               name="cup"
@@ -149,17 +142,19 @@ const HomeScreen = () => {
               style={{ position: 'absolute', left: 105, top: 340, zIndex: 0 }}
             />
           </Animatable.View>
-          <Animatable.View animation="bounceIn" delay={1100}>
-            <MaterialCommunityIcons
-              name="star"
-              size={31}
-              color="#c7c7c773"
+
+          <Animatable.View animation="bounceInUp" delay={1100}>
+            <LottieView
+              source={require('../assets/lottie/Walking_Avocado.json')}
+              autoPlay
+              loop
               style={{
                 position: 'absolute',
-                left: 120,
-                top: 160,
-                zIndex: 1,
-                opacity: 0.4,
+                right: 30,
+                top: 140,
+                zIndex: 0,
+                width: 120,
+                height: 120,
               }}
             />
           </Animatable.View>
@@ -176,11 +171,15 @@ const HomeScreen = () => {
               name="water"
               size={32}
               color="#c7c7c773"
-              style={{ position: 'absolute', right: 20, bottom: 100, zIndex: 1 }}
+              style={{
+                position: 'absolute',
+                right: 20,
+                bottom: 100,
+                zIndex: 1,
+              }}
             />
           </Animatable.View>
 
-          {/* Centered circular image */}
           <Animatable.View
             animation="fadeInUp"
             delay={200}
@@ -197,7 +196,6 @@ const HomeScreen = () => {
               <Image source={Showcase} style={{ width: 160, height: 240 }} />
             </View>
           </Animatable.View>
-          {/* Special dish text, right-aligned to the image */}
           <Animatable.View
             animation="fadeInUp"
             delay={400}
@@ -265,8 +263,6 @@ const HomeScreen = () => {
           </Animatable.View>
         </View>
       </Animatable.View>
-
-      {/* Quick Menu - Circular Style */}
       <View
         style={{
           flexDirection: 'row',
@@ -320,8 +316,6 @@ const HomeScreen = () => {
           </TouchableOpacity>
         ))}
       </View>
-
-      {/* Featured Section */}
       <Text style={styles.sectionTitle}>Popular Foods</Text>
       <ScrollView
         horizontal
@@ -357,8 +351,6 @@ const HomeScreen = () => {
               </TouchableOpacity>
             ))}
       </ScrollView>
-
-      {/* Special Offers Section */}
       <Text style={styles.sectionTitle}>Special Offers</Text>
       {loading && !refreshing
         ? Array.from({ length: 2 }).map((_, i) => (

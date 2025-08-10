@@ -180,13 +180,13 @@ const OrderDetailScreen = () => {
                 {item.sweetness && ` • ${item.sweetness}`}
               </Text>
             </View>
-            <Text style={styles.itemPrice}>₹{item.price}</Text>
+            <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
           </View>
         ))}
         
         <View style={styles.totalRow}>
           <Text style={styles.totalLabel}>Total</Text>
-          <Text style={styles.totalAmount}>₹{order.total?.toFixed(0) || '0'}</Text>
+          <Text style={styles.totalAmount}>${order.total?.toFixed(2) || '0.00'}</Text>
         </View>
       </View>
     </ScrollView>

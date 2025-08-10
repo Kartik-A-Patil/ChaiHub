@@ -53,12 +53,11 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: 150,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
+    padding:5
   },
   productImageContainer: {
-    width: 76,
-    height: 76,
+    width: 106,
+    height: 'auto',
     borderRadius: 10,
     overflow: 'hidden',
     marginRight: 12,
@@ -108,13 +107,13 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     color: '#D4AF37',
-    marginBottom: 4,
+    marginBottom: 2,
   },
   productDescription: {
     fontSize: 12,
     color: '#7A7A7A',
     lineHeight: 16,
-    marginBottom: 8,
+    marginBottom: 10,
   },
   productFooter: {
     flexDirection: 'row',

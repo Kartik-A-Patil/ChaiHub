@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as Animatable from 'react-native-animatable';
 import type { AppDispatch } from '../store/store';
 import { selectCartItems, selectCartLoading } from '../store/cartSelectors';
 import {
@@ -22,6 +23,8 @@ import imageMap from '../utils/imageMap';
 import { useFirestore } from '../contexts/FirestoreContext';
 import { useNavigation } from '@react-navigation/native';
 import { hapticActions } from '../utils/hapticUtils';
+import AnimatedScreenWrapper from '../components/AnimatedScreenWrapper';
+import AnimatedButton from '../components/AnimatedButton';
 const CartScreen = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
@@ -59,19 +62,34 @@ const CartScreen = () => {
     dispatch(updateQuantity({ id, quantity: newQuantity }));
   }; 
   return (
-    <SafeAreaView style={styles.root}> 
-      <View style={styles.container}>
-        {/* Cart Items Scrollable Section */}
-        {items.length === 0 ? (
-          <View style={styles.emptyCartContainer}>
-            <Ionicons name="cart-outline" size={72} color="#bbb" style={styles.emptyCartIcon} />
-            <Text style={styles.emptyCartText}>
-              Your cart is empty!
-            </Text>
-            <Text style={styles.emptyCartSubText}>
-              Start adding some delicious items to your cart.
-            </Text>
-          </View>
+    <AnimatedScreenWrapper animationType="slideInUp" duration={350}>
+      <SafeAreaView style={styles.root}> 
+        <View style={styles.container}>
+          {/* Cart Items Scrollable Section */}
+          {items.length === 0 ? (
+            <Animatable.View 
+              animation="fadeInUp" 
+              delay={200}
+              style={styles.emptyCartContainer}
+            >
+              <Animatable.View animation="bounceIn" delay={400}>
+                <Ionicons name="cart-outline" size={72} color="#bbb" style={styles.emptyCartIcon} />
+              </Animatable.View>
+              <Animatable.Text 
+                animation="fadeInUp" 
+                delay={600}
+                style={styles.emptyCartText}
+              >
+                Your cart is empty!
+              </Animatable.Text>
+              <Animatable.Text 
+                animation="fadeInUp" 
+                delay={800}
+                style={styles.emptyCartSubText}
+              >
+                Start adding some delicious items to your cart.
+              </Animatable.Text>
+            </Animatable.View>
         ) : (
           <ScrollView
             
@@ -80,7 +98,7 @@ const CartScreen = () => {
               <RefreshControl refreshing={loading} onRefresh={onRefresh} />
             }
           >
-            {items.map(item => {
+            {items.map((item, index) => {
               const product = products.find(p => p.id === item.id);
               let imageSource = { uri: 'https://via.placeholder.com/60' };
               if (product && product.image) {
@@ -93,40 +111,64 @@ const CartScreen = () => {
                 }
               }
               return (
-                <View key={item.id} style={styles.cartItemRow}>
+                <Animatable.View 
+                  key={item.id} 
+                  animation="slideInRight" 
+                  delay={index * 100}
+                  style={styles.cartItemRow}
+                >
                   <View style={styles.cartItemLeft}>
-                    <Image
-                      source={imageSource}
-                      style={styles.cartItemImage}
-                    />
+                    <Animatable.View 
+                      animation="zoomIn" 
+                      delay={index * 100 + 200}
+                    >
+                      <Image
+                        source={imageSource}
+                        style={styles.cartItemImage}
+                      />
+                    </Animatable.View>
                     <View
                       style={styles.cartItemTextWrap}
                     >
-                      <Text style={styles.cartItemName}>{item.name}</Text>
-                      <Text style={styles.cartItemDesc}>{item.quantity} item</Text>
+                      <Animatable.Text 
+                        animation="fadeInLeft" 
+                        delay={index * 100 + 300}
+                        style={styles.cartItemName}
+                      >
+                        {item.name}
+                      </Animatable.Text>
+                      <Animatable.Text 
+                        animation="fadeInLeft" 
+                        delay={index * 100 + 400}
+                        style={styles.cartItemDesc}
+                      >
+                        {item.quantity} item
+                      </Animatable.Text>
                     </View>
                   </View>
                   <View style={styles.cartItemRight}>
-                    <TouchableOpacity
+                    <AnimatedButton
+                      animationType="scale"
                       style={styles.qtyBtn}
                       onPress={() => handleUpdateQuantity(item.id, -1)}
                     >
                       <Text style={styles.qtyBtnText}>-</Text>
-                    </TouchableOpacity>
+                    </AnimatedButton>
                     <TextInput
                       style={styles.qtyInput}
                       value={String(item.quantity)}
                       keyboardType="number-pad"
                       editable={false}
                     />
-                    <TouchableOpacity
+                    <AnimatedButton
+                      animationType="scale"
                       style={styles.qtyBtn}
                       onPress={() => handleUpdateQuantity(item.id, 1)}
                     >
                       <Text style={styles.qtyBtnText}>+</Text>
-                    </TouchableOpacity>
+                    </AnimatedButton>
                   </View>
-                </View>
+                </Animatable.View>
               );
             })}
           </ScrollView>
@@ -151,7 +193,8 @@ const CartScreen = () => {
               ${total.toFixed(2)}
             </Text>
           </View>
-          <TouchableOpacity
+          <AnimatedButton
+            animationType="bounce"
             style={styles.orderButton}
             onPress={() => {
               hapticActions.navigate();
@@ -160,10 +203,11 @@ const CartScreen = () => {
             disabled={items.length === 0}
           >
             <Text style={styles.checkoutBtnText}>Order</Text>
-          </TouchableOpacity>
+          </AnimatedButton>
         </View>
       </View>
     </SafeAreaView>
+    </AnimatedScreenWrapper>
   );
 };
 

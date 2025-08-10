@@ -133,7 +133,7 @@ const RecentOrdersScreen = () => {
         <View style={styles.orderBody}>
             <View style={styles.totalContainer}>
                 <Text style={styles.totalLabel}>Total</Text>
-                <Text style={styles.orderTotal}>₹{item.total?.toFixed(2) ?? '0.00'}</Text>
+                <Text style={styles.orderTotal}>${item.total?.toFixed(2) ?? '0.00'}</Text>
             </View>
             <View style={[styles.statusContainer, { backgroundColor: statusStyle.color }]}>
                 <Icon name={statusStyle.icon} size={16} color="#fff" />
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     color: '#333',
     paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom: 10,
+    paddingBottom: 20,
   },
   centered: {
     flex: 1,

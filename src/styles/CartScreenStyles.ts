@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
   },
   totalContainer: {
     flexDirection: 'column',
+    paddingBottom: 16,
   },
   totalLabel: {
     maxWidth: 80,
@@ -209,10 +210,10 @@ const styles = StyleSheet.create({
   orderButton: {
     maxWidth: 180,
     marginLeft: 16,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#FF6B35',
     borderRadius: 12,
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 35,
   },
 });
 

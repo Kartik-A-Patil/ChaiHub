@@ -24,7 +24,7 @@ const ProductScreenStyles = StyleSheet.create({
     borderTopLeftRadius: 34,
     borderTopRightRadius: 34,
     padding: 24,
-    marginTop: -20,
+    marginTop: -30,
   },
   categoryTitleRow: {
     flexDirection: 'row',
