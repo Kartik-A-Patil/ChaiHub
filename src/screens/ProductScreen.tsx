@@ -6,7 +6,6 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  StatusBar,
 } from 'react-native';
 import { Snackbar } from 'react-native-paper';
 import {
@@ -23,6 +22,7 @@ import { useFirestore } from '../contexts/FirestoreContext';
 import imageMap from '../utils/imageMap';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { hapticActions } from '../utils/hapticUtils';
+import { getSnackbarStyle, snackbarTextStyle, snackbarActionStyle } from '../utils/snackbarUtils';
 type RootStackParamList = {
   Product: { id: string };
   [key: string]: any;
@@ -225,7 +225,6 @@ const ProductScreen: React.FC = () => {
 
   return (
     <View style={ProductScreenStyles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#f7f7f7" />
 
       <ScrollView
         contentContainerStyle={ProductScreenStyles.scrollContent}
@@ -363,14 +362,18 @@ const ProductScreen: React.FC = () => {
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}
         duration={1000}
+        style={getSnackbarStyle('success')}
         action={{
           label: 'View Cart',
+          labelStyle: snackbarActionStyle,
           onPress: () => {
             navigation.navigate('Cart');
           },
         }}
       >
-        Item added to cart!
+        <Text style={snackbarTextStyle}>
+          Item added to cart!
+        </Text>
       </Snackbar>
     </View>
   );

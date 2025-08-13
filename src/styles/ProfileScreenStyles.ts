@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
 
-
 const PROFILE_AVATAR_SIZE = 140;
 
 const ProfileScreenStyles = StyleSheet.create({
@@ -21,6 +20,7 @@ const ProfileScreenStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
+    position: 'relative',
   },
   avatar: {
     width: PROFILE_AVATAR_SIZE - 10,
@@ -28,16 +28,58 @@ const ProfileScreenStyles = StyleSheet.create({
     borderRadius: (PROFILE_AVATAR_SIZE - 10) / 2,
     resizeMode: 'cover',
   },
+  editButton: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    backgroundColor: '#222',
+    borderRadius: 16,
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+  greeting: {
+    fontSize: 16,
+    color: '#888',
+    marginBottom: 4,
+    fontFamily: 'PlaywriteHU-VariableFont_wght',
+  },
   name: {
     fontSize: 22,
     fontWeight: 'bold',
     color: '#222',
-    marginBottom: 4,
+    marginBottom: 15,
   },
   subtitle: {
     fontSize: 15,
     color: '#888',
-    marginBottom: 2,
+    marginBottom: 16,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    paddingHorizontal: 20,
+    marginTop: 8,
+  },
+  statItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  statNumber: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#222',
+    fontFamily: 'PlaywriteHU-VariableFont_wght',
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#888',
+    marginTop: 2,
+    textAlign: 'center',
   },
   joined: {
     fontSize: 14,

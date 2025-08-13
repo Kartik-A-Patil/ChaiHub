@@ -11,6 +11,7 @@ import RestaurantMenuStyles from '../styles/RestaurantMenuStyles';
 import { useFirestore } from '../contexts/FirestoreContext';
 import StickyFilterBar from '../components/StickyFilterBar';
 import { hapticActions } from '../utils/hapticUtils';
+import { getSnackbarStyle, snackbarTextStyle, snackbarActionStyle } from '../utils/snackbarUtils';
 
 interface MenuScreenRouteParams {
   id: string;
@@ -228,15 +229,18 @@ const RestaurantMenuScreen = () => {
         visible={snackbarVisible}
         onDismiss={onDismissSnackBar}
         duration={1000}
+        style={getSnackbarStyle('success')}
         action={{
           label: 'View Cart',
+          labelStyle: snackbarActionStyle,
           onPress: () => {
             (navigation as any).navigate('Cart');
           },
         }}
-        style={RestaurantMenuStyles.snackbar}
       >
-        Item added to cart!
+        <Text style={snackbarTextStyle}>
+          Item added to cart!
+        </Text>
       </Snackbar>
     </View>
   );

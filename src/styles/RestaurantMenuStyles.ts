@@ -91,7 +91,12 @@ const RestaurantMenuStyles = StyleSheet.create({
 
   // Empty & Snackbar
   emptyList: { color: '#6c757d', textAlign: 'center', marginTop: 100 },
-  snackbar: { backgroundColor: '#212529' },
+  snackbar: { 
+    backgroundColor: '#212529',
+    borderRadius: 12,
+    marginHorizontal: 16,
+    marginBottom: 16,
+  },
 });
 
 export default RestaurantMenuStyles;

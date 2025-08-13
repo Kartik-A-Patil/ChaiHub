@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   cartItemImage: {
-    width: 56,
-    height: 56,
+    width: 76,
+    height: 76,
     borderRadius: 12,
     marginRight: 16,
     backgroundColor: '#eee',

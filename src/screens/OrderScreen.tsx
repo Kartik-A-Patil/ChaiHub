@@ -8,7 +8,7 @@ import {
   Modal,
 } from 'react-native';
 import { Snackbar } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import { orderScreenStyles as styles } from '../styles/OrderScreenStyles';
@@ -17,6 +17,7 @@ import { selectCartItems, selectCartTotal } from '../store/cartSelectors';
 import { clearCartAsync } from '../store/cartSlice';
 import type { AppDispatch } from '../store/store';
 import { hapticActions } from '../utils/hapticUtils';
+import { getSnackbarStyle, snackbarTextStyle, snackbarActionStyle } from '../utils/snackbarUtils';
 
 const OrderScreen = () => {
   const [address, setAddress] = useState('');
@@ -79,6 +80,8 @@ const OrderScreen = () => {
         total: cartTotal,
         status: 'pending',
         createdAt: firestore.FieldValue.serverTimestamp(),
+        cancelable: true, // Allow cancellation for new orders
+        estimatedDeliveryTime: new Date(Date.now() + 25 * 60 * 1000), // 25 minutes from now
       };
       await firestore().collection('orders').add(order);
       dispatch(clearCartAsync());
@@ -89,7 +92,16 @@ const OrderScreen = () => {
       setSnackbarType('success');
       setSnackbarVisible(true);
       setTimeout(() => {
-        (navigation as any).navigate('RecentOrders');
+        // Reset navigation stack to prevent going back to the order screen
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [
+              { name: 'Home' },
+              { name: 'RecentOrders' },
+            ],
+          })
+        );
       }, 1500);
     } catch (error) {
       hapticActions.orderFailure();
@@ -184,13 +196,16 @@ const OrderScreen = () => {
         visible={snackbarVisible}
         onDismiss={() => setSnackbarVisible(false)}
         duration={2000}
-        style={{ backgroundColor: snackbarType === 'error' ? '#d32f2f' : '#388e3c' }}
+        style={getSnackbarStyle(snackbarType)}
         action={snackbarType === 'error' ? undefined : {
           label: 'OK',
+          labelStyle: snackbarActionStyle,
           onPress: () => setSnackbarVisible(false),
         }}
       >
-        {snackbarMsg}
+        <Text style={snackbarTextStyle}>
+          {snackbarMsg}
+        </Text>
       </Snackbar>
     </View>
   );

@@ -5,7 +5,7 @@ import HomeScreen from '../screens/HomeScreen';
 import CartScreen from '../screens/CartScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import NearbyRestaurantsScreen from '../screens/NearbyRestaurantsScreen';
-import { HeaderRightBtn, TabBarIcon, TabBarLabel } from '../components/TabBarComponents';
+import { HeaderRightBtn, TabBarIcon, TabBarLabel ,HeaderRightSearchBtn} from '../components/TabBarComponents';
 
 const Tab = createBottomTabNavigator();
 
@@ -25,8 +25,8 @@ const screenOptions = ({ route }: { route: RouteProp<ParamListBase, string> }): 
   tabBarStyle: { 
     backgroundColor: '#fff',
     paddingTop: 5,
-    paddingBottom: 5,
-    height: 60,
+    paddingBottom: 10,
+    height: 90,
   },
   tabBarLabelStyle: { 
     fontSize: 13,

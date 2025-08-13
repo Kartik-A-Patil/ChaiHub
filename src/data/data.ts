@@ -93,16 +93,7 @@ export const profileData = {
       icon: 'clock',
       route:"RecentOrders"
     },
-    {
-      label: 'Payment Methods',
-      icon: 'credit-card',
-      route: 'Payment',
-    },
-    {
-      label: 'Notifications',
-      icon: 'bell',
-      route: 'Notifications',
-    },
+    
     {
       label: 'Help',
       icon: 'help-circle',

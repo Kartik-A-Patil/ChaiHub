@@ -1,47 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Animated,
-  Easing,
-  StyleSheet,
-  Text,
-  Dimensions,
-} from 'react-native';
+import { StatusBar } from 'react-native';
 import { FirebaseAuthTypes } from '@react-native-firebase/auth';
-
-const { width: screenWidth } = Dimensions.get('window');
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fffbe6',
-  },
-  chaiCup: {
-    width: 120,
-    height: 120,
-    marginBottom: 24,
-  },
-  loadingText: {
-    fontSize: 18,
-    color: '#b8860b',
-    fontFamily: 'PlaywriteHU-VariableFont_wght',
-    marginTop: 20,
-  },
-});
-
-const images = [
-  require('../assets/tea.jpg'),
-  require('../assets/coffee.jpg'),
-  require('../assets/Masala_Chai.jpg'),
-  require('../assets/lemone_tea.jpeg'),
-];
-
 import { NavigationContainer } from '@react-navigation/native';
 import {
   createStackNavigator,
-  TransitionPresets,
   CardStyleInterpolators,
 } from '@react-navigation/stack';
 import LoginScreen from '../screens/LoginScreen';
@@ -53,6 +15,8 @@ import RestaurantMenuScreen from '../screens/RestaurantMenuScreen';
 import SearchScreen from '../screens/SearchScreen';
 import CartScreen from '../screens/CartScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import ProfileEditScreen from '../screens/ProfileEditScreen';
+import HelpScreen from '../screens/HelpScreen';
 import NearbyRestaurantsScreen from '../screens/NearbyRestaurantsScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import SeedingScreen from '../screens/SeedingScreen';
@@ -76,26 +40,15 @@ const AppNavigator = () => {
 
   return (
     <NavigationContainer>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="transparent"
+        translucent
+      />
+
       <Stack.Navigator
         initialRouteName={user ? 'Home' : 'Login'}
         screenOptions={{
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-          transitionSpec: {
-            open: {
-              animation: 'timing',
-              config: {
-                duration: 300,
-                easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
-              },
-            },
-            close: {
-              animation: 'timing',
-              config: {
-                duration: 250,
-                easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
-              },
-            },
-          },
           headerStyle: {
             backgroundColor: '#ffffff',
             borderBottomWidth: 0,
@@ -115,19 +68,14 @@ const AppNavigator = () => {
             component={LoginScreen}
             options={{
               headerShown: false,
-              cardStyleInterpolator:
-                CardStyleInterpolators.forFadeFromBottomAndroid,
             }}
           />
         )}
-        {/* App screens */}
         <Stack.Screen
           name="Home"
           component={HomeTabs}
           options={{
             headerShown: false,
-            cardStyleInterpolator:
-              CardStyleInterpolators.forFadeFromBottomAndroid,
           }}
         />
         <Stack.Screen
@@ -135,7 +83,6 @@ const AppNavigator = () => {
           component={RecentOrdersScreen}
           options={{
             title: 'Recent Orders',
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
           }}
         />
         <Stack.Screen
@@ -143,7 +90,6 @@ const AppNavigator = () => {
           component={OrderDetailScreen}
           options={{
             title: 'Order Details',
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
           }}
         />
         <Stack.Screen
@@ -161,7 +107,6 @@ const AppNavigator = () => {
           component={ProductTypeScreen}
           options={{
             title: 'Product Type',
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
           }}
         />
         <Stack.Screen
@@ -169,7 +114,6 @@ const AppNavigator = () => {
           component={RestaurantMenuScreen}
           options={{
             title: 'Menu',
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
           }}
         />
         <Stack.Screen
@@ -177,6 +121,8 @@ const AppNavigator = () => {
           component={SearchScreen}
           options={{
             title: 'Search Products',
+            gestureEnabled: true,
+            gestureDirection: 'vertical',
             cardStyleInterpolator:
               CardStyleInterpolators.forModalPresentationIOS,
           }}
@@ -185,42 +131,36 @@ const AppNavigator = () => {
           name="Cart"
           component={CartScreen}
           options={{
-            title: 'Cart',
+            gestureEnabled: true,
+            gestureDirection: 'vertical',
             cardStyleInterpolator:
               CardStyleInterpolators.forModalPresentationIOS,
           }}
         />
+        <Stack.Screen name="Order" component={OrderScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen
-          name="Order"
-          component={OrderScreen}
+          name="ProfileEdit"
+          component={ProfileEditScreen}
           options={{
-            title: 'Order',
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+            title: 'Edit Profile',
           }}
         />
         <Stack.Screen
-          name="Profile"
-          component={ProfileScreen}
+          name="Help"
+          component={HelpScreen}
           options={{
-            title: 'Account',
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+            title: 'Help & Support',
           }}
         />
-        <Stack.Screen
-          name="Nearby"
-          component={NearbyRestaurantsScreen}
-          options={{
-            title: 'Nearby',
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-          }}
-        />
+        <Stack.Screen name="Nearby" component={NearbyRestaurantsScreen} />
         <Stack.Screen
           name="Settings"
           component={SettingsScreen}
           options={{
             title: 'Settings',
             gestureEnabled: true,
-            gestureDirection: 'horizontal',
+            gestureDirection: 'vertical',
             cardStyleInterpolator:
               CardStyleInterpolators.forModalPresentationIOS,
           }}
@@ -230,7 +170,6 @@ const AppNavigator = () => {
           component={SeedingScreen}
           options={{
             title: 'Seeding',
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
           }}
         />
         <Stack.Screen
@@ -238,7 +177,10 @@ const AppNavigator = () => {
           component={NotificationSettingsScreen}
           options={{
             title: 'Notification Settings',
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+            gestureEnabled: true,
+            gestureDirection: 'vertical',
+            cardStyleInterpolator:
+              CardStyleInterpolators.forModalPresentationIOS,
           }}
         />
       </Stack.Navigator>

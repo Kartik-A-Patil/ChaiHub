@@ -32,7 +32,6 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
 
   useEffect(() => {
     if (visible) {
-      // Fade in
       Animated.timing(fadeValue, {
         toValue: 1,
         duration: 300,
@@ -40,7 +39,6 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
         useNativeDriver: true,
       }).start();
 
-      // Spin animation
       Animated.loop(
         Animated.timing(spinValue, {
           toValue: 1,
@@ -50,7 +48,6 @@ const LoadingAnimation: React.FC<LoadingAnimationProps> = ({
         }),
       ).start();
 
-      // Pulse animation
       Animated.loop(
         Animated.sequence([
           Animated.timing(pulseValue, {

@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Text, StyleSheet, Animated, Easing } from 'react-native';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Feather from 'react-native-vector-icons/Feather';
 import * as Animatable from 'react-native-animatable';
 
 export const HeaderRightBtn = ({ navigation }: { navigation: any }) => {
@@ -21,14 +22,37 @@ export const HeaderRightBtn = ({ navigation }: { navigation: any }) => {
     </Animatable.View>
   );
 };
+export const HeaderRightSearchBtn = ({ navigation }: { navigation: any }) => {
+  const handlePress = () => {
+    navigation.navigate('Search');
+  };
+  return (
+    <Animatable.View animation="fadeInRight" duration={800}>
+      <Feather
+        name="search"
+        size={26}
+        color="#222"
+        style={{ marginRight: 20 }}
+        onPress={handlePress}
+      />
+    </Animatable.View>
+  );
+};
 
-export const TabBarIcon = ({ route, color, focused }: { route: any, color: string, focused: boolean }) => {
+export const TabBarIcon = ({
+  route,
+  color,
+  focused,
+}: {
+  route: any;
+  color: string;
+  focused: boolean;
+}) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const bounceAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     if (focused) {
-      // Scale and bounce animation when tab becomes focused
       Animated.sequence([
         Animated.timing(scaleAnim, {
           toValue: 1.2,
@@ -45,7 +69,6 @@ export const TabBarIcon = ({ route, color, focused }: { route: any, color: strin
         }),
       ]).start();
 
-      // Gentle bounce for the icon
       Animated.loop(
         Animated.sequence([
           Animated.timing(bounceAnim, {
@@ -69,8 +92,7 @@ export const TabBarIcon = ({ route, color, focused }: { route: any, color: strin
   }, [focused]);
 
   let iconName = '';
-  if (route.name === 'Cart')
-    iconName = focused ? 'cart' : 'cart-outline';
+  if (route.name === 'Cart') iconName = focused ? 'cart' : 'cart-outline';
   else if (route.name === 'HomeTab')
     iconName = focused ? 'home' : 'home-outline';
   else if (route.name === 'Profile')
@@ -86,10 +108,7 @@ export const TabBarIcon = ({ route, color, focused }: { route: any, color: strin
   return (
     <Animated.View
       style={{
-        transform: [
-          { scale: scaleAnim },
-          { translateY: bounceTranslate }
-        ],
+        transform: [{ scale: scaleAnim }, { translateY: bounceTranslate }],
       }}
     >
       <MaterialCommunityIcons
@@ -101,7 +120,15 @@ export const TabBarIcon = ({ route, color, focused }: { route: any, color: strin
   );
 };
 
-export const TabBarLabel = ({ route, color, focused }: { route: any, color: string, focused: boolean }) => {
+export const TabBarLabel = ({
+  route,
+  color,
+  focused,
+}: {
+  route: any;
+  color: string;
+  focused: boolean;
+}) => {
   const fadeAnim = useRef(new Animated.Value(focused ? 1 : 0.7)).current;
   const scaleAnim = useRef(new Animated.Value(focused ? 1 : 0.9)).current;
 

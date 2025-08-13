@@ -2,22 +2,18 @@ import React, { useEffect } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   Image,
   ScrollView,
   TextInput,
   SafeAreaView,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import * as Animatable from 'react-native-animatable';
 import type { AppDispatch } from '../store/store';
 import { selectCartItems, selectCartLoading } from '../store/cartSelectors';
-import {
-  updateQuantity,
-  loadCart,
-} from '../store/cartSlice';
+import { updateQuantity, loadCart } from '../store/cartSlice';
 import styles from '../styles/CartScreenStyles';
 import imageMap from '../utils/imageMap';
 import { useFirestore } from '../contexts/FirestoreContext';
@@ -49,7 +45,7 @@ const CartScreen = () => {
     const item = items.find(i => i.id === id);
     if (!item) return;
     const newQuantity = Math.max(1, item.quantity + delta);
-    
+
     // Add haptic feedback for quantity changes
     if (delta > 0) {
       hapticActions.quantityChange();
@@ -58,155 +54,224 @@ const CartScreen = () => {
     } else {
       hapticActions.quantityChange();
     }
-    
+
     dispatch(updateQuantity({ id, quantity: newQuantity }));
-  }; 
+  };
   return (
-    <AnimatedScreenWrapper animationType="slideInUp" duration={350}>
-      <SafeAreaView style={styles.root}> 
+    <AnimatedScreenWrapper animationType="fadeIn" duration={250}>
+      <SafeAreaView style={[styles.root, { backgroundColor: '#f7f8fa' }]}>
         <View style={styles.container}>
-          {/* Cart Items Scrollable Section */}
+          {/* Cart Items Section */}
           {items.length === 0 ? (
-            <Animatable.View 
-              animation="fadeInUp" 
-              delay={200}
-              style={styles.emptyCartContainer}
-            >
-              <Animatable.View animation="bounceIn" delay={400}>
-                <Ionicons name="cart-outline" size={72} color="#bbb" style={styles.emptyCartIcon} />
-              </Animatable.View>
-              <Animatable.Text 
-                animation="fadeInUp" 
-                delay={600}
-                style={styles.emptyCartText}
+            <View style={styles.emptyCartContainer}>
+              <Ionicons
+                name="cart-outline"
+                size={80}
+                color="#e0e0e0"
+                style={styles.emptyCartIcon}
+              />
+              <Text
+                style={[
+                  styles.emptyCartText,
+                  {
+                    fontSize: 22,
+                    color: '#888',
+                    fontWeight: '600',
+                    marginTop: 12,
+                  },
+                ]}
               >
                 Your cart is empty!
-              </Animatable.Text>
-              <Animatable.Text 
-                animation="fadeInUp" 
-                delay={800}
-                style={styles.emptyCartSubText}
+              </Text>
+              <Text
+                style={[
+                  styles.emptyCartSubText,
+                  { color: '#aaa', marginTop: 4 },
+                ]}
               >
                 Start adding some delicious items to your cart.
-              </Animatable.Text>
-            </Animatable.View>
-        ) : (
-          <ScrollView
-            
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl refreshing={loading} onRefresh={onRefresh} />
-            }
-          >
-            {items.map((item, index) => {
-              const product = products.find(p => p.id === item.id);
-              let imageSource = { uri: 'https://via.placeholder.com/60' };
-              if (product && product.image) {
-                if (typeof product.image === 'string' && imageMap[product.image]) {
-                  imageSource = imageMap[product.image];
-                } else if (typeof product.image === 'object' && product.image.uri) {
-                  imageSource = { uri: product.image.uri };
-                } else if (typeof product.image === 'string' && product.image.startsWith('http')) {
-                  imageSource = { uri: product.image };
-                }
+              </Text>
+            </View>
+          ) : (
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              refreshControl={
+                <RefreshControl refreshing={loading} onRefresh={onRefresh} />
               }
-              return (
-                <Animatable.View 
-                  key={item.id} 
-                  animation="slideInRight" 
-                  delay={index * 100}
-                  style={styles.cartItemRow}
-                >
-                  <View style={styles.cartItemLeft}>
-                    <Animatable.View 
-                      animation="zoomIn" 
-                      delay={index * 100 + 200}
-                    >
-                      <Image
-                        source={imageSource}
-                        style={styles.cartItemImage}
-                      />
-                    </Animatable.View>
-                    <View
-                      style={styles.cartItemTextWrap}
-                    >
-                      <Animatable.Text 
-                        animation="fadeInLeft" 
-                        delay={index * 100 + 300}
-                        style={styles.cartItemName}
-                      >
-                        {item.name}
-                      </Animatable.Text>
-                      <Animatable.Text 
-                        animation="fadeInLeft" 
-                        delay={index * 100 + 400}
-                        style={styles.cartItemDesc}
-                      >
-                        {item.quantity} item
-                      </Animatable.Text>
-                    </View>
-                  </View>
-                  <View style={styles.cartItemRight}>
-                    <AnimatedButton
-                      animationType="scale"
-                      style={styles.qtyBtn}
-                      onPress={() => handleUpdateQuantity(item.id, -1)}
-                    >
-                      <Text style={styles.qtyBtnText}>-</Text>
-                    </AnimatedButton>
-                    <TextInput
-                      style={styles.qtyInput}
-                      value={String(item.quantity)}
-                      keyboardType="number-pad"
-                      editable={false}
-                    />
-                    <AnimatedButton
-                      animationType="scale"
-                      style={styles.qtyBtn}
-                      onPress={() => handleUpdateQuantity(item.id, 1)}
-                    >
-                      <Text style={styles.qtyBtnText}>+</Text>
-                    </AnimatedButton>
-                  </View>
-                </Animatable.View>
-              );
-            })}
-          </ScrollView>
-        )}
+              contentContainerStyle={{ paddingBottom: 16 }}
+            >
+              {items.map((item, index) => {
+                const product = products.find(p => p.id === item.id);
 
-        {/* Payment Section*/}
-        <View
-          style={styles.checkoutContainer}
-        >
-          <View style={styles.totalContainer}>
-            <Text
-              style={styles.totalLabel}
-              numberOfLines={1}
-            >
-              Total
-            </Text>
-            <Text
-              style={styles.totalValue}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              ${total.toFixed(2)}
-            </Text>
-          </View>
-          <AnimatedButton
-            animationType="bounce"
-            style={styles.orderButton}
-            onPress={() => {
-              hapticActions.navigate();
-              (navigation as any).navigate('Order');
+                return (
+                  <TouchableOpacity
+                    key={item.id}
+                    style={{
+                      ...styles.cartItemRow,
+                      backgroundColor: '#fff',
+                      borderRadius: 16,
+                      marginBottom: 6,
+                    }}
+                    onPress={() => {
+                      hapticActions.navigate();
+                      (navigation as any).navigate('Product', {
+                        id: item.id,
+                      });
+                    }}
+                  >
+                    <View style={styles.cartItemLeft}>
+                      <Image
+                        source={imageMap[product?.image]}
+                        style={[
+                          styles.cartItemImage,
+                          {
+                            borderRadius: 12,
+                            borderWidth: 1,
+                            borderColor: '#eee',
+                          },
+                        ]}
+                      />
+                      <View style={styles.cartItemTextWrap}>
+                        <Text
+                          style={[
+                            styles.cartItemName,
+                            { fontWeight: '600', fontSize: 17, color: '#222' },
+                          ]}
+                        >
+                          {item.name}
+                        </Text>
+                        <Text
+                          style={[
+                            styles.cartItemDesc,
+                            { color: '#888', fontSize: 13 },
+                          ]}
+                        >
+                          {item.quantity} item
+                        </Text>
+                      </View>
+                    </View>
+                    <View style={styles.cartItemRight}>
+                      <AnimatedButton
+                        animationType="fade"
+                        style={{
+                          ...styles.qtyBtn,
+                          backgroundColor: '#f0f0f0',
+                          borderRadius: 8,
+                        }}
+                        onPress={() => handleUpdateQuantity(item.id, -1)}
+                      >
+                        <Text
+                          style={[
+                            styles.qtyBtnText,
+                            { fontSize: 18, color: '#555' },
+                          ]}
+                        >
+                          -
+                        </Text>
+                      </AnimatedButton>
+                      <TextInput
+                        style={[
+                          styles.qtyInput,
+                          {
+                            fontWeight: '500',
+                            color: '#222',
+                            backgroundColor: '#f7f7f7',
+                            borderRadius: 8,
+                          },
+                        ]}
+                        value={String(item.quantity)}
+                        keyboardType="number-pad"
+                        editable={false}
+                      />
+                      <AnimatedButton
+                        animationType="fade"
+                        style={{
+                          ...styles.qtyBtn,
+                          backgroundColor: '#f0f0f0',
+                          borderRadius: 8,
+                        }}
+                        onPress={() => handleUpdateQuantity(item.id, 1)}
+                      >
+                        <Text
+                          style={[
+                            styles.qtyBtnText,
+                            { fontSize: 18, color: '#555' },
+                          ]}
+                        >
+                          +
+                        </Text>
+                      </AnimatedButton>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          )}
+
+          {/* Payment Section*/}
+          <View
+            style={{
+              ...styles.checkoutContainer,
+              backgroundColor: '#fff',
+              borderTopLeftRadius: 18,
+              borderTopRightRadius: 18,
+              shadowColor: '#000',
+              shadowOpacity: 0.06,
+              shadowRadius: 12,
+              elevation: 4,
             }}
-            disabled={items.length === 0}
           >
-            <Text style={styles.checkoutBtnText}>Order</Text>
-          </AnimatedButton>
+            <View style={styles.totalContainer}>
+              <Text
+                style={[
+                  styles.totalLabel,
+                  { color: '#888', fontWeight: '500', fontSize: 16 },
+                ]}
+              >
+                Total
+              </Text>
+              <Text
+                style={[
+                  styles.totalValue,
+                  { color: '#222', fontWeight: '700', fontSize: 20 },
+                ]}
+              >
+                ${total.toFixed(2)}
+              </Text>
+            </View>
+            <AnimatedButton
+              animationType="fade"
+              style={{
+                ...styles.orderButton,
+                backgroundColor: items.length === 0 ? '#eee' : '#ff7043',
+                borderRadius: 12,
+                shadowColor: '#ff7043',
+                shadowOpacity: items.length === 0 ? 0 : 0.12,
+                shadowRadius: 8,
+                elevation: items.length === 0 ? 0 : 3,
+              }}
+              onPress={() => {
+                hapticActions.navigate();
+                (navigation as any).navigate('Order');
+              }}
+              disabled={items.length === 0}
+            >
+              <Text
+                style={[
+                  styles.checkoutBtnText,
+                  {
+                    color: items.length === 0 ? '#aaa' : '#fff',
+                    fontWeight: '600',
+                    fontSize: 17,
+                  },
+                ]}
+              >
+                Order
+              </Text>
+            </AnimatedButton>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
     </AnimatedScreenWrapper>
   );
 };

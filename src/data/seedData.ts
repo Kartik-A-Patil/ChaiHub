@@ -236,7 +236,6 @@ export const products = [
     reviews: 89,
   },
 
-  // Tea Time (r4) - Healthy Teas & Light Snacks
   {
     restaurantId: 'r4',
     name: 'Green Tea',

@@ -33,6 +33,11 @@ const SettingsScreen = ({ navigation }: { navigation: any }) => {
         style: 'destructive',
         onPress: () => {
           auth().signOut();
+          navigation.navigate('Login');
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          });
         },
       },
     ]);
@@ -44,16 +49,6 @@ const SettingsScreen = ({ navigation }: { navigation: any }) => {
       'ChaiHub v1.0.0\n\nYour favorite food delivery app bringing delicious meals right to your doorstep.\n\nDeveloped with ❤️ for food lovers.',
       [{ text: 'OK' }],
     );
-  };
-
-  const handlePrivacyPolicy = () => {
-    // You can replace with your actual privacy policy URL
-    Linking.openURL('https://chaihub.com/privacy-policy');
-  };
-
-  const handleTermsOfService = () => {
-    // You can replace with your actual terms URL
-    Linking.openURL('https://chaihub.com/terms-of-service');
   };
 
   const dynamicStyles = StyleSheet.create({

@@ -30,7 +30,6 @@ const AnimatedScreenWrapper: React.FC<AnimatedScreenWrapperProps> = ({
   );
 };
 
-// Custom hook for creating smooth fade animations
 export const useFadeAnimation = (duration: number = 300) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -59,7 +58,6 @@ export const useFadeAnimation = (duration: number = 300) => {
   return { fadeAnim, fadeIn, fadeOut };
 };
 
-// Custom hook for scale animations
 export const useScaleAnimation = (duration: number = 300, initialScale: number = 0.9) => {
   const scaleAnim = useRef(new Animated.Value(initialScale)).current;
 
@@ -88,7 +86,6 @@ export const useScaleAnimation = (duration: number = 300, initialScale: number =
   return { scaleAnim, scaleIn, scaleOut };
 };
 
-// Custom hook for slide animations
 export const useSlideAnimation = (
   direction: 'up' | 'down' | 'left' | 'right' = 'up',
   duration: number = 400,

@@ -36,7 +36,6 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
 
   useEffect(() => {
     if (visible) {
-      // Scale in animation
       Animated.spring(scaleAnim, {
         toValue: 1,
         damping: 12,
@@ -45,7 +44,6 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
         useNativeDriver: true,
       }).start();
 
-      // Gentle rotation animation
       Animated.loop(
         Animated.sequence([
           Animated.timing(rotateAnim, {
@@ -73,7 +71,6 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({
   }, [visible]);
 
   const handlePress = () => {
-    // Add a bounce animation on press
     if (animatableRef.current) {
       animatableRef.current.pulse(500);
     }

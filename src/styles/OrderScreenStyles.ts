@@ -5,8 +5,8 @@ export const orderScreenStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
     padding: 20,
-    justifyContent: 'center',
     alignItems: 'center',
+    paddingTop: 140,
   },
   title: {
     fontSize: 28,

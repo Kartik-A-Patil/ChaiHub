@@ -106,8 +106,8 @@ const HomeScreen = () => {
       contentContainerStyle={{ paddingBottom: 80 }}
     >
       <Animatable.View
-        animation="fadeInDown"
-        duration={1000}
+        animation="fadeIn"
+        duration={800}
         style={{
           marginTop: 18,
           marginBottom: 18,
@@ -118,71 +118,106 @@ const HomeScreen = () => {
         }}
       >
         <View style={{ flex: 1 }}>
-          <Animatable.View animation="bounceInDown" delay={500}>
-            <MaterialCommunityIcons
-              name="cup"
-              size={28}
-              color="#ffb7003d"
-              style={{ position: 'absolute', left: 30, top: 18, zIndex: 1 }}
-            />
-          </Animatable.View>
-          <Animatable.View animation="bounceInDown" delay={700}>
-            <MaterialCommunityIcons
-              name="food"
-              size={28}
-              color="#ff440041"
-              style={{ position: 'absolute', right: 28, top: 38, zIndex: 1 }}
-            />
-          </Animatable.View>
-          <Animatable.View animation="bounceInUp" delay={900}>
-            <MaterialCommunityIcons
-              name="leaf"
-              size={34}
-              color="#c7c7c7ff"
-              style={{ position: 'absolute', left: 105, top: 340, zIndex: 0 }}
-            />
-          </Animatable.View>
-
-          <Animatable.View animation="bounceInUp" delay={1100}>
-            <LottieView
-              source={require('../assets/lottie/Walking_Avocado.json')}
-              autoPlay
-              loop
+          {/* Subtle floating icons with modern positioning */}
+          <Animatable.View 
+            animation="fadeInUp" 
+            delay={200}
+            style={{
+              position: 'absolute',
+              right: 40,
+              top: 20,
+              zIndex: 1,
+            }}
+          >
+            <View
               style={{
-                position: 'absolute',
-                right: 30,
-                top: 140,
-                zIndex: 0,
-                width: 120,
-                height: 120,
+                backgroundColor: '#fff',
+                borderRadius: 20,
+                padding: 8,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.1,
+                shadowRadius: 8,
+                elevation: 3,
               }}
-            />
+            >
+              <MaterialCommunityIcons
+                name="coffee"
+                size={20}
+                color="#ff7b00"
+              />
+            </View>
           </Animatable.View>
-          <Animatable.View animation="bounceInLeft" delay={1300}>
-            <MaterialCommunityIcons
-              name="cookie"
-              size={24}
-              color="#c7c7c773"
-              style={{ position: 'absolute', left: 20, bottom: 30, zIndex: 1 }}
-            />
-          </Animatable.View>
-          <Animatable.View animation="bounceInRight" delay={1500}>
-            <MaterialCommunityIcons
-              name="water"
-              size={32}
-              color="#c7c7c773"
+          
+          <Animatable.View 
+            animation="fadeInUp" 
+            delay={400}
+            style={{
+              position: 'absolute',
+              left: 40,
+              top: 60,
+              zIndex: 1,
+            }}
+          >
+            <View
               style={{
-                position: 'absolute',
-                right: 20,
-                bottom: 100,
-                zIndex: 1,
+                backgroundColor: '#fff',
+                borderRadius: 16,
+                padding: 6,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.08,
+                shadowRadius: 6,
+                elevation: 2,
               }}
-            />
+            >
+              <MaterialCommunityIcons
+                name="food"
+                size={16}
+                color="#ff4400"
+              />
+            </View>
+          </Animatable.View>
+          
+          {/* Minimal floating accent - replacing the walking avocado */}
+          <Animatable.View 
+            animation="fadeIn" 
+            delay={600}
+            style={{
+              position: 'absolute',
+              right: 50,
+              top: 120,
+              zIndex: 0,
+            }}
+          >
+            <Animatable.View
+              animation={{
+                0: { transform: [{ translateY: 0 }] },
+                0.5: { transform: [{ translateY: -8 }] },
+                1: { transform: [{ translateY: 0 }] },
+              }}
+              iterationCount="infinite"
+              duration={3000}
+              style={{
+                backgroundColor: 'rgba(255, 123, 0, 0.1)',
+                borderRadius: 30,
+                padding: 12,
+                borderWidth: 1,
+                borderColor: 'rgba(255, 123, 0, 0.2)',
+              }}
+            >
+              <MaterialCommunityIcons
+                name="silverware-fork-knife"
+                size={24}
+                color="rgba(255, 123, 0, 0.6)"
+              />
+            </Animatable.View>
           </Animatable.View>
 
           <Animatable.View
             animation="fadeInUp"
-            delay={200}
+            delay={100}
+            duration={600}
             style={{ alignItems: 'center', marginTop: 10, marginBottom: 10 }}
           >
             <View
@@ -198,10 +233,10 @@ const HomeScreen = () => {
           </Animatable.View>
           <Animatable.View
             animation="fadeInUp"
-            delay={400}
+            delay={300}
+            duration={600}
             style={{
               alignItems: 'flex-start',
-
               marginLeft: 30,
               paddingHorizontal: 30,
             }}
@@ -263,7 +298,10 @@ const HomeScreen = () => {
           </Animatable.View>
         </View>
       </Animatable.View>
-      <View
+      <Animatable.View
+        animation="fadeInUp"
+        delay={500}
+        duration={600}
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -274,49 +312,63 @@ const HomeScreen = () => {
         }}
       >
         {quickMenu.map((item, idx) => (
-          <TouchableOpacity
+          <Animatable.View
             key={item.type}
+            animation="fadeInUp"
+            delay={600 + idx * 100}
+            duration={400}
             style={{ alignItems: 'center', flex: 1 }}
-            onPress={() => {
-              navigation.navigate('ProductType', { type: item.type });
-            }}
           >
-            <View
-              style={{
-                width: 80,
-                height: 80,
-                borderRadius: 40,
-                backgroundColor: idx === 0 ? '#f5c242' : '#f5f3f1',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginBottom: 8,
-                borderWidth: idx === 0 ? 2 : 0,
-                borderColor: idx === 0 ? '#f5c242' : 'transparent',
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 4,
-                elevation: 2,
+            <TouchableOpacity
+              style={{ alignItems: 'center', flex: 1 }}
+              onPress={() => {
+                navigation.navigate('ProductType', { type: item.type });
               }}
             >
-              <Image
-                source={item.image}
-                style={{ width: 75, height: 75, borderRadius: 50 }}
-              />
-            </View>
-            <Text
-              style={{
-                fontSize: 14,
-                color: '#222',
-                fontWeight: idx === 0 ? 'bold' : '500',
-              }}
-            >
-              {item.name}
-            </Text>
-          </TouchableOpacity>
+              <View
+                style={{
+                  width: 80,
+                  height: 80,
+                  borderRadius: 40,
+                  backgroundColor: idx === 0 ? '#f5c242' : '#f5f3f1',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginBottom: 8,
+                  borderWidth: idx === 0 ? 2 : 0,
+                  borderColor: idx === 0 ? '#f5c242' : 'transparent',
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 4,
+                  elevation: 2,
+                }}
+              >
+                <Image
+                  source={item.image}
+                  style={{ width: 75, height: 75, borderRadius: 50 }}
+                />
+              </View>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: '#222',
+                  fontWeight: idx === 0 ? 'bold' : '500',
+                }}
+              >
+                {item.name}
+              </Text>
+            </TouchableOpacity>
+          </Animatable.View>
         ))}
-      </View>
-      <Text style={styles.sectionTitle}>Popular Foods</Text>
+      </Animatable.View>
+      <Animatable.Text 
+        animation="fadeInUp" 
+        delay={800} 
+        duration={500}
+        style={styles.sectionTitle}
+      >
+        Popular Foods
+      </Animatable.Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -351,7 +403,14 @@ const HomeScreen = () => {
               </TouchableOpacity>
             ))}
       </ScrollView>
-      <Text style={styles.sectionTitle}>Special Offers</Text>
+      <Animatable.Text 
+        animation="fadeInUp" 
+        delay={900} 
+        duration={500}
+        style={styles.sectionTitle}
+      >
+        Special Offers
+      </Animatable.Text>
       {loading && !refreshing
         ? Array.from({ length: 2 }).map((_, i) => (
             <View style={styles.offerRow} key={i}>

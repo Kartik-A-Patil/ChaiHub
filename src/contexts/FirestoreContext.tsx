@@ -14,35 +14,23 @@ import firestore, {
 
 interface Product {
   [key: string]: any;
-}
-
-interface Restaurant {
-  [key: string]: any;
-}
-
-interface OfferBanner {
-  [key: string]: any;
-}
-
-interface CartItem {
-  [key: string]: any;
-}
-
-interface SpecialOffer {
-  [key: string]: any;
-}
-
-interface ProfileData {
-  [key: string]: any;
+  restaurantId: string;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  type: string;
+  rating: number;
+  reviews: number;
 }
 
 interface FirestoreContextProps {
   products: Product[];
-  restaurants: Restaurant[];
-  offerBanners: OfferBanner[];
-  cartItems: CartItem[];
-  specialOffers: SpecialOffer[];
-  profileData: ProfileData[];
+  restaurants: any[];
+  offerBanners: any[];
+  cartItems: any[];
+  specialOffers: any[];
+  profileData: any[];
   loading: boolean;
   fetchProducts: () => Promise<void>;
   fetchProductsByType: (type: string) => Promise<Product[]>;
@@ -59,84 +47,35 @@ const FirestoreContext = createContext<FirestoreContextProps | undefined>(
 
 export const FirestoreProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-  const [offerBanners, setOfferBanners] = useState<OfferBanner[]>([]);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [specialOffers, setSpecialOffers] = useState<SpecialOffer[]>([]);
-  const [profileData, setProfileData] = useState<ProfileData[]>([]);
-  const [pendingRequests, setPendingRequests] = useState(0);
-  const loading = pendingRequests > 0;
+  const [restaurants, setRestaurants] = useState<any[]>([]);
+  const [offerBanners, setOfferBanners] = useState<any[]>([]);
+  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [specialOffers, setSpecialOffers] = useState<any[]>([]);
+  const [profileData, setProfileData] = useState<any[]>([]);
+  const [pending, setPending] = useState(0);
+  const loading = pending > 0;
 
-  const fetchCartItems = async () => {
-    setPendingRequests(prev => prev + 1);
+  const fetchCollection = async (
+    col: string,
+    setter: (data: any[]) => void,
+  ) => {
+    setPending(p => p + 1);
     try {
-      const snapshot = await getDocs(collection(firestore(), 'cartItems'));
-      setCartItems(
-        snapshot.docs.map((document: any) => ({ id: document.id, ...document.data() })),
-      );
+      const snap = await getDocs(collection(firestore(), col));
+      setter(snap.docs.map((d: any) => ({ id: d.id, ...d.data() })));
     } finally {
-      setPendingRequests(prev => prev - 1);
-    }
-  };
-
-  const fetchSpecialOffers = async () => {
-    setPendingRequests(prev => prev + 1);
-    try {
-      const snapshot = await getDocs(collection(firestore(), 'specialOffers'));
-      setSpecialOffers(
-        snapshot.docs.map((document: any) => ({ id: document.id, ...document.data() })),
-      );
-    } finally {
-      setPendingRequests(prev => prev - 1);
+      setPending(p => p - 1);
     }
   };
 
-  const fetchProfileData = async () => {
-    setPendingRequests(prev => prev + 1);
-    try {
-      const snapshot = await getDocs(collection(firestore(), 'profileData'));
-      setProfileData(
-        snapshot.docs.map((document: any) => ({ id: document.id, ...document.data() })),
-      );
-    } finally {
-      setPendingRequests(prev => prev - 1);
-    }
-  };
-  const fetchProducts = async () => {
-    setPendingRequests(prev => prev + 1);
-    try {
-      const snapshot = await getDocs(collection(firestore(), 'products'));
-      setProducts(
-        snapshot.docs.map((document: any) => ({ id: document.id, ...document.data() })),
-      );
-    } finally {
-      setPendingRequests(prev => prev - 1);
-    }
-  };
-
-  const fetchRestaurants = async () => {
-    setPendingRequests(prev => prev + 1);
-    try {
-      const snapshot = await getDocs(collection(firestore(), 'restaurants'));
-      setRestaurants(
-        snapshot.docs.map((document: any) => ({ id: document.id, ...document.data() })),
-      );
-    } finally {
-      setPendingRequests(prev => prev - 1);
-    }
-  };
-
-  const fetchOfferBanners = async () => {
-    setPendingRequests(prev => prev + 1);
-    try {
-      const snapshot = await getDocs(collection(firestore(), 'offerBanners'));
-      setOfferBanners(
-        snapshot.docs.map((document: any) => ({ id: document.id, ...document.data() })),
-      );
-    } finally {
-      setPendingRequests(prev => prev - 1);
-    }
-  };
+  const fetchProducts = () => fetchCollection('products', setProducts);
+  const fetchRestaurants = () => fetchCollection('restaurants', setRestaurants);
+  const fetchOfferBanners = () =>
+    fetchCollection('offerBanners', setOfferBanners);
+  const fetchCartItems = () => fetchCollection('cartItems', setCartItems);
+  const fetchSpecialOffers = () =>
+    fetchCollection('specialOffers', setSpecialOffers);
+  const fetchProfileData = () => fetchCollection('profileData', setProfileData);
 
   useEffect(() => {
     fetchProducts();
@@ -147,18 +86,17 @@ export const FirestoreProvider = ({ children }: { children: ReactNode }) => {
     fetchProfileData();
   }, []);
 
-  // Fetch products by type (do not cache, fetch only when required)
   const fetchProductsByType = async (type: string): Promise<Product[]> => {
-    setPendingRequests(prev => prev + 1);
+    setPending(p => p + 1);
     try {
       const q = query(
         collection(firestore(), 'products'),
         where('type', '==', type),
       );
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
+      const snap = await getDocs(q);
+      return snap.docs.map((d: any) => ({ id: d.id, ...d.data() }));
     } finally {
-      setPendingRequests(prev => prev - 1);
+      setPending(p => p - 1);
     }
   };
 
@@ -187,9 +125,8 @@ export const FirestoreProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useFirestore = () => {
-  const context = useContext(FirestoreContext);
-  if (!context) {
+  const ctx = useContext(FirestoreContext);
+  if (!ctx)
     throw new Error('useFirestore must be used within a FirestoreProvider');
-  }
-  return context;
+  return ctx;
 };
