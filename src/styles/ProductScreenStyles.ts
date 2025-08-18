@@ -124,7 +124,6 @@ const ProductScreenStyles = StyleSheet.create({
   quantityControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f8f9fa',
     borderRadius: 16,
     paddingHorizontal: 4,
     paddingVertical: 4,

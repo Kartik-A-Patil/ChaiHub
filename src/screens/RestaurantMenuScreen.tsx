@@ -95,39 +95,39 @@ const RestaurantMenuScreen = () => {
         horizontal
         showsHorizontalScrollIndicator={false}
         style={RestaurantMenuStyles.bestSellingList}
-        contentContainerStyle={{ paddingRight: 40, paddingLeft: 10 }}
+        contentContainerStyle={{ paddingRight: 10, paddingLeft: 10 }}
       >
         {bestSelling.map(item => (
-          <View key={item.id} style={RestaurantMenuStyles.bestSellingItem}>
-            <TouchableOpacity
-              onPress={() =>
-                (navigation as any).navigate('Product', { id: item.id })
+          <TouchableOpacity
+            key={item.id}
+            onPress={() => (navigation as any).navigate('Product', { id: item.id })}
+            activeOpacity={0.8}
+            style={RestaurantMenuStyles.bestSellingItem}
+          >
+            <Image
+              source={
+                typeof item.image === 'string' && imageMap[item.image]
+                  ? imageMap[item.image]
+                  : item.image
               }
-              activeOpacity={0.8}
-            >
-              <Image
-                source={
-                  typeof item.image === 'string' && imageMap[item.image]
-                    ? imageMap[item.image]
-                    : item.image
-                }
-                style={RestaurantMenuStyles.bestSellingImage}
-              />
-              <View style={RestaurantMenuStyles.bestSellingInfo}>
-                <Text style={RestaurantMenuStyles.bestSellingName}>
-                  {item.name}
-                </Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <Text style={RestaurantMenuStyles.menuPrice}>
-                    ${item.price.toFixed(2)}
-                  </Text>
-                  <Text style={RestaurantMenuStyles.details}>
-                    {item.rating ? `${item.rating} ★` : ''}
-                  </Text>
-                </View>
+              style={RestaurantMenuStyles.bestSellingImage}
+            />
+            <View style={RestaurantMenuStyles.bestSellingInfo}>
+              <Text style={RestaurantMenuStyles.bestSellingName} numberOfLines={1}>
+                {item.name}
+              </Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Text style={RestaurantMenuStyles.menuPrice}>${item.price.toFixed(2)}</Text>
+                <TouchableOpacity
+                  style={RestaurantMenuStyles.addToCartButton}
+                  onPress={() => handleAddToCart(item)}
+                  activeOpacity={0.8}
+                >
+                  <Text style={RestaurantMenuStyles.addToCartButtonText}>Add</Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-          </View>
+            </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
       <StickyFilterBar activeTab={activeTab} setActiveTab={setActiveTab} />
